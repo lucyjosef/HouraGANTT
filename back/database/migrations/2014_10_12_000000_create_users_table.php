@@ -24,8 +24,10 @@ class CreateUsersTable extends Migration
 
         Schema::table('users', function(Blueprint $table){
             $table->string('lastname')->nullable();
-            $table->integer('role_id')->unsigned()->nullable();
+            $table->unsignedInteger('role_id')->nullable();
             $table->string('token')->nullable();
+            $table->string('avatar')->nullable();
+            $table->boolean('rgpd_accepted')->default(true);
         });
     }
 
