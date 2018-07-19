@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
@@ -15,17 +16,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return ProjectResource::collection();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $req)
-    {
-        //
+        return ProjectResource::collection(Project::paginate(25));
     }
 
     /**
@@ -36,11 +27,9 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        // $project = Project::create([
-        //     'user_id' => $req->user()->id,
-        //     'name' => $req->name,
-        //     'description' => $req->description,
-        // ]);
+        $project = new Project($request[0]);
+        $project->save();
+        return $project; 
     }
 
     /**
@@ -51,18 +40,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return DB::table('projects')->where('id', $id)->get();
     }
 
     /**
@@ -74,7 +52,8 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        DB::table('projects')->where('id', $id)->update($request[0]);
+        return response()->json([$request[0], 200]);
     }
 
     /**
@@ -83,8 +62,9 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        DB::table('projects')->where('id', $id)->delete();
+        return response()->json(null, 204);
     }
 }
