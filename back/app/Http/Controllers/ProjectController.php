@@ -68,10 +68,4 @@ class ProjectController extends Controller
         return response()->json(null, 204);
     }
 
-    private
-
-    function isItLate() {
-        // todo
-    }
-
 }

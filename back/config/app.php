@@ -170,10 +170,8 @@ return [
         /*
          * Package Service Providers...
          */
-<<<<<<< HEAD
         Swatkins\LaravelGantt\GanttServiceProvider::class,
-=======
->>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
+
 
         /*
          * Application Service Providers...
