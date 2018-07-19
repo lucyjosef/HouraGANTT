@@ -67,4 +67,11 @@ class ProjectController extends Controller
         DB::table('projects')->where('id', $id)->delete();
         return response()->json(null, 204);
     }
+
+    private
+
+    function isItLate() {
+        // todo
+    }
+
 }
