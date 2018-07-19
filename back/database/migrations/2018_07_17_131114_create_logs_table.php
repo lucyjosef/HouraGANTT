@@ -18,8 +18,6 @@ class CreateLogsTable extends Migration
             $table->string('function_name');
             $table->unsignedInteger('project_id');
             $table->foreign('project_id')->references('id')->on('projects');
-            $table->unsignedInteger('right_id');
-            $table->foreign('right_id')->references('id')->on('rights');
             $table->timestamps();
         });
     }

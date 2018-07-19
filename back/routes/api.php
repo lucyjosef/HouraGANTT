@@ -17,8 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/project', 'ProjectController@index');
-
 Route::group([
     'middleware' => 'api',
 ], function () {
@@ -30,3 +28,6 @@ Route::group([
     Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
 });
+
+Route::apiResource('projects', 'ProjectController');
+

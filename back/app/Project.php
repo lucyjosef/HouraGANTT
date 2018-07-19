@@ -12,7 +12,7 @@ class Project extends Model
      * @var string
      */
     protected $fillable = [
-		'label', 'start', 'end', 'description', 'links', 'billing'
+		'name', 'description', 'links', 'billing'
     ];
 
     public function user() {
