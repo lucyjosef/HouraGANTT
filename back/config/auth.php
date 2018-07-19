@@ -11,10 +11,17 @@ return [
     | reset options for your application. You may change these defaults
     | as required, but they're a perfect start for most applications.
     |
+<<<<<<< HEAD
     */
 
     'defaults' => [
         'guard' => 'web',
+=======
+ */
+
+    'defaults' => [
+        'guard' => 'api',
+>>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
         'passwords' => 'users',
     ],
 
@@ -33,7 +40,11 @@ return [
     |
     | Supported: "session", "token"
     |
+<<<<<<< HEAD
     */
+=======
+     */
+>>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
 
     'guards' => [
         'web' => [
@@ -42,7 +53,11 @@ return [
         ],
 
         'api' => [
+<<<<<<< HEAD
             'driver' => 'token',
+=======
+            'driver' => 'jwt',
+>>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
             'provider' => 'users',
         ],
     ],
@@ -62,7 +77,11 @@ return [
     |
     | Supported: "database", "eloquent"
     |
+<<<<<<< HEAD
     */
+=======
+     */
+>>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
 
     'providers' => [
         'users' => [
@@ -89,7 +108,11 @@ return [
     | considered valid. This security feature keeps tokens short-lived so
     | they have less time to be guessed. You may change this as needed.
     |
+<<<<<<< HEAD
     */
+=======
+     */
+>>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
 
     'passwords' => [
         'users' => [

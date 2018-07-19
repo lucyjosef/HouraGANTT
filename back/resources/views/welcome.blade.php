@@ -83,7 +83,11 @@
                 </div>
 
                 <div class="links">
+<<<<<<< HEAD
                     <a href="https://laravel.com/docs">Documentation</a>
+=======
+                    <a href="https://laravel.com/docs">Documfdgdfentation</a>
+>>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
                     <a href="https://laracasts.com">Laracasts</a>
                     <a href="https://laravel-news.com">News</a>
                     <a href="https://forge.laravel.com">Forge</a>

@@ -16,11 +16,11 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('first_name');
-            $table->string('last_name');
+            $table->string('last_name')->nullable();
             $table->string('email')->unique();
             $table->string('encrypted_password');
             $table->string('avatar')->nullable();
-            $table->unsignedInteger('role_id');
+            $table->unsignedInteger('role_id')->nullable();
             $table->foreign('role_id')->references('id')->on('roles');
             $table->boolean('rgpd_accepted')->default(true);
             $table->rememberToken();
