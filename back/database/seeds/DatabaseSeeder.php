@@ -14,6 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         DB::table('roles')->insert([
         	'name' => 'Testeur',
+            'created_at' => date('Y-m-d H:m:s'),
+        ]);
+
+        DB::table('specialities')->insert([
+            'name' => str_random(8),
+            'created_at' => date('Y-m-d H:m:s'),
         ]);
 
         DB::table('users')->insert([
@@ -23,6 +29,7 @@ class DatabaseSeeder extends Seeder
             'encrypted_password' => bcrypt('secret'),
             'role_id' => 1,
             'rgpd_accepted' => true,
+            'created_at' => date('Y-m-d H:m:s'),
         ]);
 
         DB::table('projects')->insert([
@@ -31,6 +38,28 @@ class DatabaseSeeder extends Seeder
         	'description'=> str_random(8),
         	'link' => str_random(8),
         	'billing' => str_random(8),
+            'created_at' => date('Y-m-d H:m:s'),
+        ]);
+
+        DB::table('resources')->insert([
+            'name' => str_random(8),
+            'ratio' => 1.5,
+            'job' => 'full-stack',
+            'first_name' => str_random(8),
+            'project_id' => 1,
+            'created_at' => date('Y-m-d H:m:s'),
+        ]);
+
+        DB::table('tasks')->insert([
+            'name' => str_random(8),
+            'starts_at' => '1991-11-22 07:16:08',
+            'ends_at' => '2038-02-20 10:45:17',
+            'is_finished' => false,
+            'additional_cost' => 145.99,
+            'project_id' => 1,
+            'speciality_id' => 1,
+            'resource_id' => 1,
+            'created_at' => date('Y-m-d H:m:s'),
         ]);
     }
 }
