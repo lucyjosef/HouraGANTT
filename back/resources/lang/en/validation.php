@@ -65,10 +65,6 @@ return [
         'array'   => 'The :attribute must have at least :min items.',
     ],
     'not_in'               => 'The selected :attribute is invalid.',
-<<<<<<< HEAD
-=======
-    'not_regex'            => 'The :attribute format is invalid.',
->>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
     'numeric'              => 'The :attribute must be a number.',
     'present'              => 'The :attribute field must be present.',
     'regex'                => 'The :attribute format is invalid.',

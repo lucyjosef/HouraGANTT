@@ -1,9 +1,6 @@
 
 window._ = require('lodash');
-<<<<<<< HEAD
-=======
 window.Popper = require('popper.js').default;
->>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -13,12 +10,7 @@ window.Popper = require('popper.js').default;
 
 try {
     window.$ = window.jQuery = require('jquery');
-
-<<<<<<< HEAD
-    require('bootstrap-sass');
-=======
     require('bootstrap');
->>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
 } catch (e) {}
 
 /**
@@ -57,12 +49,7 @@ if (token) {
 
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
-<<<<<<< HEAD
-//     key: 'your-pusher-key',
-//     cluster: 'mt1',
-=======
 //     key: process.env.MIX_PUSHER_APP_KEY,
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
->>>>>>> c5099344416609b3c15e407a399ac3daa56e5c6f
 //     encrypted: true
 // });
