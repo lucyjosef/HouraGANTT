@@ -32,3 +32,5 @@ Route::group([
 Route::apiResource('projects', 'ProjectController');
 
 Route::apiResource('projects.tasks', 'TaskController');
+
+Route::apiResource('projects.resources', 'ResourceController');

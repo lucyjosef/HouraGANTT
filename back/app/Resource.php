@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Task extends Model
+class Resource extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class Task extends Model
      * @var string
      */
     protected $fillable = [
-		'name', 'starts_at', 'ends_at', 'is_finished', 'additional_cost', 'project_id', 'speciality_id', 'resource_id'
+		'name', 'ratio', 'job', 'first_name', 'project_id'
     ];
 
     /**
@@ -20,14 +20,14 @@ class Task extends Model
      *
      * @var string
      */
-    protected $table = 'tasks';
+    protected $table = 'resources';
 
     /**
-     * Make relation between the project and the tasks
+     * Make relation between the project and the resources
      *
      * @return mixed
      */
     public function project() {
-    	return $this->belongsTo(User::class);
+    	return $this->belongsTo(Project::class);
     }
 }

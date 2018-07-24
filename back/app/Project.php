@@ -41,6 +41,15 @@ class Project extends Model
     }
 
     /**
+     * Make relation between the project and the resources
+     *
+     * @return mixed
+     */
+    public function resource() {
+        return $this->hasMany(Resource::class);
+    }
+
+    /**
      * Evaluates projects state
      *
      * @return boolean
