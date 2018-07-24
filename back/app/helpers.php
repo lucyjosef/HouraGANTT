@@ -10,3 +10,15 @@ function InsertLog($function_name,$project_id,$user_id){
     );
   return $id;
 }
+
+function checkRight($user_id,$project_id){
+     $right = \DB::table('project_user')->where([
+         ['user_id', '=', $user_id],
+         ['project_id', '=', $project_id],
+     ])->first();
+     if($right->right_id === 1){
+         return true;
+     }else{
+         return false;
+     }
+}
