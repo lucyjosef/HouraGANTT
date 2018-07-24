@@ -16,7 +16,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return TasksResource::collection(Task::paginate(25));
+        return TasksResource::collection(Task::all());
     }
 
     /**
@@ -40,7 +40,7 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        return DB::table('tasks')->where('id', $id)->get();
+        return new TasksResource(Task::find($id));
     }
 
     /**

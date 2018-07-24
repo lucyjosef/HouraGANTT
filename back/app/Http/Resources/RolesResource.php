@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProjectResource extends Resource
+class RolesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,13 +17,8 @@ class ProjectResource extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'duration_days' => $this->duration_days,
-            'description' => $this->description,
-            'links' => $this->links,
-            'billing' => $this->billing,
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at,
-            'tasks' => TasksResource::collection($this->task),
         ];
     }
 }

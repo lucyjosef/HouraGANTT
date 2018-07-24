@@ -16,7 +16,7 @@ class ResourceController extends Controller
      */
     public function index()
     {
-        return ResourcesResource::collection(Resource::paginate(25));
+        return ResourcesResource::collection(Resource::all());
     }
 
     /**
@@ -40,7 +40,7 @@ class ResourceController extends Controller
      */
     public function show($id)
     {
-        return DB::table('resources')->where('id', $id)->get();
+        return new ResourcesResource(Resource::find($id));
     }
 
     /**

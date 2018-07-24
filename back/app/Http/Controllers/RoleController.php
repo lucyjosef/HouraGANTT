@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Project;
-use App\User;
+use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Resources\ProjectResource;
+use App\Http\Resources\RoleResource;
 
-class ProjectController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +16,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return ProjectResource::collection(Project::all());
+        return RoleResource::collection(Role::paginate(25));
     }
 
     /**
@@ -28,63 +27,44 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $project = new Project();
-        $project->name = $request->name;
-        $project->description = $request->description;
-        $project->duration_days = $request->duration_days;
-        $project->link = $request->link;
-        $project->billing = $request->billing;
-        $project->save();
-
-        // $right_id = DB::table('project_user')->where([
-        //     ['user_id', '=', $request->user_id],
-        //     ['project_id', '=', $project->id],
-        // ])->get();
-
-        DB::table('project_user')->insert(
-            [
-                'user_id' => $request->user_id, 
-                'project_id' => $project->id
-            ]
-        );
-
-        return $project; 
+        $role = new Role($request[0]);
+        $role->save();
+        return $role;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return new ProjectResource(Project::find($id));
+        return DB::table('roles')->where('id', $id)->get();
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        DB::table('projects')->where('id', $id)->update($request[0]);
+        DB::table('roles')->where('id', $id)->update($request[0]);
         return response()->json([$request[0], 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
     {
-        DB::table('projects')->where('id', $id)->delete();
+        DB::table('roles')->where('id', $id)->delete();
         return response()->json(null, 204);
     }
-
 }

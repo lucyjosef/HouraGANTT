@@ -28,6 +28,15 @@ class Task extends Model
      * @return mixed
      */
     public function project() {
-    	return $this->belongsTo(User::class);
+    	return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * Make relation between the resource and the tasks
+     *
+     * @return mixed
+     */
+    public function resource() {
+        return $this->belongsTo(Resource::class);
     }
 }
