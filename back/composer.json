@@ -11,7 +11,6 @@
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
         "swatkins/laravel-gantt": "^1.0",
-        "barryvdh/laravel-cors": "^0.11.0",
         "tymon/jwt-auth": "1.0.*"
     },
     "require-dev": {
@@ -28,7 +27,11 @@
         ],
         "psr-4": {
             "App\\": "app/"
-        }
+        },
+        "files": [
+            "app/Helper/Helper.php",
+            "app/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
