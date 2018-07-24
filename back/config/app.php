@@ -150,6 +150,8 @@ return [
         /*
          * Package Service Providers...
          */
+        Swatkins\LaravelGantt\GanttServiceProvider::class,
+
 
         /*
          * Application Service Providers...

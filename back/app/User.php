@@ -16,8 +16,15 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name', 'last_name', 'email', 'avatar', 
     ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'users';
 
     /**
      * The attributes that should be hidden for arrays.
@@ -25,8 +32,12 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'encrypted_password', 'remember_token',
     ];
+
+    public function projects() {
+        return $this->hasMany(Project::class);
+    } 
 
     // Rest omitted for brevity
 

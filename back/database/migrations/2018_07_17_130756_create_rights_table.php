@@ -15,8 +15,7 @@ class CreateRightsTable extends Migration
     {
         Schema::create('rights', function (Blueprint $table) {
             $table->increments('id');
-            $table->boolean('read')->default(true);
-            $table->boolean('edit')->default(false);
+            $table->string('name');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

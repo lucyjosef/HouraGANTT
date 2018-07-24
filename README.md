@@ -1,4 +1,3 @@
 # HouraGANTT !!
 
-*Happy to make a dev happy*
-*Can I pull you ?*
+*Happy to make another dev happy*
