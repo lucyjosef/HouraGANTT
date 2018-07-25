@@ -23,11 +23,20 @@ class Resource extends Model
     protected $table = 'resources';
 
     /**
-     * Make relation between the project and the resources
+     * Make relation between the project and the tasks
      *
      * @return mixed
      */
     public function project() {
-    	return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * Make relation between the tasks and the resources
+     *
+     * @return mixed
+     */
+    public function task() {
+        return $this->hasOne(Task::class);
     }
 }

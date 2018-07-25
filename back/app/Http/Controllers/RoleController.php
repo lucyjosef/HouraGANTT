@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Resource;
+use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Resources\ResourcesResource;
+use App\Http\Resources\RoleResource;
 
-class ResourceController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class ResourceController extends Controller
      */
     public function index()
     {
-        return ResourcesResource::collection(Resource::all());
+        return RoleResource::collection(Role::paginate(25));
     }
 
     /**
@@ -27,44 +27,44 @@ class ResourceController extends Controller
      */
     public function store(Request $request)
     {
-        $resource = new Resource($request[0]);
-        $resource->save();
-        return $resource; 
+        $role = new Role($request[0]);
+        $role->save();
+        return $role;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Resource  $resource
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return new ResourcesResource(Resource::find($id));
+        return DB::table('roles')->where('id', $id)->get();
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Resource  $resource
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        DB::table('resources')->where('id', $id)->update($request[0]);
+        DB::table('roles')->where('id', $id)->update($request[0]);
         return response()->json([$request[0], 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Resource  $resource
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        DB::table('resources')->where('id', $id)->delete();
+        DB::table('roles')->where('id', $id)->delete();
         return response()->json(null, 204);
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersHasProjectsTable extends Migration
+class CreateProjectUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateUsersHasProjectsTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_has_projects', function (Blueprint $table) {
+        Schema::create('project_user', function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('project_owner')->default(false);
-            $table->unsignedInteger('right_id');
-            $table->foreign('right_id')->references('id')->on('rights');
+            $table->unsignedInteger('right_id')->default(1);
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('project_id');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateUsersHasProjectsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_has_projects');
+        Schema::dropIfExists('project_user');
     }
 }

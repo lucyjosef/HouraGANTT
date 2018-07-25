@@ -35,9 +35,23 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    /**
+     * Make relation between the user and the project
+     *
+     * @return mixed
+     */
     public function projects() {
-        return $this->hasMany(Project::class);
+        return $this->belongsToMany(Project::class);
     } 
+
+    /**
+     * Make relation between the user and the role
+     *
+     * @return mixed
+     */
+    public function role() {
+        return $this->belongsTo(Role::class);
+    }
 
     // Rest omitted for brevity
 

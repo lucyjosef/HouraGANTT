@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Project;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ProjectResource;
@@ -16,7 +17,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return ProjectResource::collection(Project::paginate(25));
+        return ProjectResource::collection(Project::all());
     }
 
     /**
@@ -27,8 +28,31 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $project = new Project($request[0]);
+        $token = $request->header('Authorization');
+        $token = substr($token, 6);
+        $token = trim($token);
+        $user = getUserInfo($token);
+        $user_id = $user->id;
+        $project = new Project();
+        $project->name = $request->name;
+        $project->description = $request->description;
+        $project->duration_days = $request->duration_days;
+        $project->link = $request->link;
+        $project->billing = $request->billing;
         $project->save();
+
+        // $right_id = DB::table('project_user')->where([
+        //     ['user_id', '=', $request->user_id],
+        //     ['project_id', '=', $project->id],
+        // ])->get();
+
+        DB::table('project_user')->insert(
+            [
+                'user_id' => $user_id,
+                'project_id' => $project->id
+            ]
+        );
+
         return $project; 
     }
 
@@ -40,7 +64,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        return DB::table('projects')->where('id', $id)->get();
+        return new ProjectResource(Project::find($id));
     }
 
     /**
