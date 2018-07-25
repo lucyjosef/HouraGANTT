@@ -28,6 +28,8 @@ Route::group([
     Route::post('addResourceTask', 'TaskController@ResourceToTask');
     Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
+    Route::resource('link', 'LinkController');
+
 });
 
 Route::apiResource('projects', 'ProjectController');

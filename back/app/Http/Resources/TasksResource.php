@@ -16,8 +16,8 @@ class TasksResource extends Resource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'starts_at' => $this->starts_at,
+            'text' => $this->name,
+            'start_date' => $this->starts_at,
             'ends_at' => $this->ends_at,
             'is_finished' => $this->is_finished,
             'additional_cost' => $this->additional_cost,
