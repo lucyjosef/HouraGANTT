@@ -25,11 +25,19 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $task = new Task($request[0]);
-        $task->save();
-        return $task; 
+    public function store(Request $request,$project)
+    { request()->validate([
+        'name' => 'required',
+        'starts_at' => 'required',
+        'duration' => 'required'
+    ]);
+        $data = $request->all();
+        $data['project_id'] = $project;
+        $tasks = Task::create($data);
+        return response()->json([
+            'status' => 'success',
+            'data' => $tasks
+        ]);
     }
 
     /**
@@ -50,10 +58,28 @@ class TaskController extends Controller
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id,$project)
     {
-        DB::table('tasks')->where('id', $id)->update($request[0]);
-        return response()->json([$request[0], 200]);
+        $token = $request->header('Authorization');
+        $token = substr($token, 6);
+        $token = trim($token);
+        $user = getUserInfo($token);
+        $user_id = $user->id;
+        $checkRight = checkRight($user_id,$project);
+        if($checkRight){
+            $task = Task::find($id);
+            $task->name = $request->text;
+            $task->starts_at = $request->start_date;
+            $task->duration = $request->duration;
+            $task->progress = $request->has("progress") ? $request->progress : 0;
+            $task->save();
+            return response()->json([
+                "action"=> "updated"
+            ]);
+        } else{
+            return response()->json(["message"=> "Unauthorized action"],401);
+
+        }
     }
 
     /**
@@ -62,9 +88,54 @@ class TaskController extends Controller
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+
+    public function destroy(Request $request,$id,$project)
     {
-        DB::table('tasks')->where('id', $id)->delete();
-        return response()->json(null, 204);
+        $token = $request->header('Authorization');
+        $token = substr($token, 6);
+        $token = trim($token);
+        $user = getUserInfo($token);
+        $user_id = $user->id;
+        $checkRight = checkRight($user_id,$project);
+        if($checkRight){
+            DB::table('tasks')->where('id', $id)->delete();
+            InsertLog("deleteTask",$id,$user_id);
+            return response()->json(null, 204);
+        }else{
+            return response()->json(["message"=> "Unauthorized action"],401);
+        }
+    }
+
+    public function ResourceToTask(Request $request,$project)
+    {
+        $token = $request->header('Authorization');
+        $token = substr($token, 6);
+        $token = trim($token);
+        $user = getUserInfo($token);
+        $user_id = $user->id;
+        $resource_id = "";
+        $functionName = "";
+        $checkRight = checkRight($user_id,$project);
+        if($checkRight){
+            if($request->action === "add"){
+                $resource_id =$request->resource_id;
+                $functionName ="AddRessourceToTask";
+            }elseif($request->action === "remove"){
+                $resource_id = NULL;
+                $functionName ="RemoveRessourceToTask";
+            }
+
+            $data =  DB::table('tasks')
+                ->where('id', $request->task_id)
+                ->update(['resource_id' => $resource_id]);
+
+            InsertLog($functionName,$request->task_id,$user_id);
+            return response()->json([
+                'status' => 'success',
+                'data' => $data
+            ]);
+        } else {
+            return response()->json(["message"=> "Unauthorized action"],401);
+        }
     }
 }

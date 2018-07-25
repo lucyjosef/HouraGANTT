@@ -21,6 +21,8 @@ class TasksResource extends Resource
             'ends_at' => $this->ends_at,
             'is_finished' => $this->is_finished,
             'additional_cost' => $this->additional_cost,
+            'duration' => $this->duration,
+            'progress' => $this->progress,
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at,
             'project_id' => $this->project_id,
