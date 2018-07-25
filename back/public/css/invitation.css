@@ -1,0 +1,27 @@
+body {
+	font-family: sans-serif;
+	padding: 0;
+	margin: 0;
+}
+h2 {
+	color: white;
+}		
+.header-img {
+	height: 150px;
+	width: 100%;
+	background-image: url(http://www.lovethispic.com/uploaded_images/22471-Sun-Over-The-Ocean.jpg);
+	background-repeat: no-repeat;
+	background-attachment: local; 
+	background-position: center center;
+	background-size: 100% auto;
+	padding: 10%;
+}
+.flex {
+	display: flex;
+	align-content: center; 
+	flex-direction: row;
+	align-items: center;
+}
+.flex-vertical {
+	/* todo */
+}

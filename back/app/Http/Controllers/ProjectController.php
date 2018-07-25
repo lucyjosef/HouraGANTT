@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Project;
 use App\User;
+use App\Project;
+use App\Mail\Invitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
@@ -90,6 +92,26 @@ class ProjectController extends Controller
     {
         DB::table('projects')->where('id', $id)->delete();
         return response()->json(null, 204);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function sendInvitation(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+        $user_mail = ['gloubi@yopmail.com', 'boulga@yopmail.com'];
+
+        foreach ($user_mail as $mail) {
+            Mail::to($mail)
+                ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                ->send(new Invitation($project));
+        }
+
+        return response()->json('Invitation sent !', 200);
     }
 
 }
