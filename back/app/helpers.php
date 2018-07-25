@@ -5,7 +5,7 @@ function getUserInfo($token) {
 }
 
 function InsertLog($function_name,$project_id,$user_id){
-  $id =  \DB::table('users')->insertGetId(
+  $id =  \DB::table('logs')->insertGetId(
         ['function_name' => $function_name, 'project_id' => $project_id,'user_id' => $user_id]
     );
   return $id;
@@ -16,7 +16,7 @@ function checkRight($user_id,$project_id){
          ['user_id', '=', $user_id],
          ['project_id', '=', $project_id],
      ])->first();
-     if($right->right_id === 1){
+     if($right->right_id === 1  || $right->project_owner === 0){
          return true;
      }else{
          return false;
