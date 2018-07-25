@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'first_name' => str_random(8),
             'last_name' => str_random(8),
             'email'=> str_random(8).'@yopmail.com',
-            'password' => bcrypt('secret'),
+            'password' => 'Azerty123',
             'role_id' => 1,
             'rgpd_accepted' => true,
             'created_at' => date('Y-m-d H:m:s'),
