@@ -28,11 +28,6 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $token = $request->header('Authorization');
-        $token = substr($token, 6);
-        $token = trim($token);
-        $user = getUserInfo($token);
-        $user_id = $user->id;
         $project = new Project();
         $project->name = $request->name;
         $project->description = $request->description;
@@ -48,12 +43,12 @@ class ProjectController extends Controller
 
         DB::table('project_user')->insert(
             [
-                'user_id' => $user_id,
+                'user_id' => auth()->user()->id,
                 'project_id' => $project->id
             ]
         );
 
-        return $project; 
+        return $project;
     }
 
     /**

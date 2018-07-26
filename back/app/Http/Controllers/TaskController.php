@@ -27,12 +27,14 @@ class TaskController extends Controller
      */
     public function store(Request $request,$project)
     { request()->validate([
-        'name' => 'required',
-        'starts_at' => 'required',
+        'text' => 'required',
+        'start_date' => 'required',
         'duration' => 'required'
     ]);
         $data = $request->all();
         $data['project_id'] = $project;
+        $data['name'] = $request->text;
+        $data['starts_at'] = $request->start_date;
         $tasks = Task::create($data);
         return response()->json([
             'status' => 'success',
@@ -60,12 +62,8 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id,$project)
     {
-        $token = $request->header('Authorization');
-        $token = substr($token, 6);
-        $token = trim($token);
-        $user = getUserInfo($token);
-        $user_id = $user->id;
-        $checkRight = checkRight($user_id,$project);
+
+        $checkRight = checkRight(auth()->user()->id,$project);
         if($checkRight){
             $task = Task::find($id);
             $task->name = $request->text;
@@ -91,11 +89,8 @@ class TaskController extends Controller
 
     public function destroy(Request $request,$id,$project)
     {
-        $token = $request->header('Authorization');
-        $token = substr($token, 6);
-        $token = trim($token);
-        $user = getUserInfo($token);
-        $user_id = $user->id;
+
+        $user_id = auth()->user()->id;
         $checkRight = checkRight($user_id,$project);
         if($checkRight){
             DB::table('tasks')->where('id', $id)->delete();
@@ -108,11 +103,7 @@ class TaskController extends Controller
 
     public function ResourceToTask(Request $request,$project)
     {
-        $token = $request->header('Authorization');
-        $token = substr($token, 6);
-        $token = trim($token);
-        $user = getUserInfo($token);
-        $user_id = $user->id;
+        $user_id = auth()->user()->id;
         $resource_id = "";
         $functionName = "";
         $checkRight = checkRight($user_id,$project);

@@ -29,11 +29,11 @@ Route::group([
     Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
     Route::resource('link', 'LinkController');
+    Route::resource('task', 'TaskController');
 
+    Route::apiResource('projects', 'ProjectController');
+    Route::apiResource('projects.tasks', 'TaskController');
+    Route::apiResource('projects.resources', 'ResourceController');
 });
 
-Route::apiResource('projects', 'ProjectController');
 
-Route::apiResource('projects.tasks', 'TaskController');
-
-Route::apiResource('projects.resources', 'ResourceController');
