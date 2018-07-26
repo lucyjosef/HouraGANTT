@@ -111,12 +111,8 @@ class ProjectController extends Controller
         try {
             $user_to_create = [
                 'first_name' => $project->temp_username,
-                'last_name' => NULL,
                 'email' => $request->user_email,
-                'password' => $project->temp_password,
-                'avatar' => NULL,
-                'role_id' => NULL,
-                'rgpd_accepted' => true
+                'password' => $project->temp_password
             ];
 
             $created_user = User::create($user_to_create);

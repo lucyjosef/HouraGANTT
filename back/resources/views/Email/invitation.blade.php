@@ -1,5 +1,4 @@
 <head>
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 	<style type="text/css">
 		body {
 			font-family: sans-serif;
@@ -10,13 +9,17 @@
 			color: #3396C4;
 		}
 		footer {
-			background-image: url(http://www.lovethispic.com/uploaded_images/22471-Sun-Over-The-Ocean.jpg);
+			background-image: url(http://localhost:4200/login-bg2.jpg);
 			background-repeat: no-repeat;
 			background-attachment: local;
 			background-position: center bottom;
 			background-size: 100% auto;
-			height: 15%;
-			margin-top: 10%;
+			height: 30%;
+			margin-top: 7%;
+		}
+		footer div {
+			color: white;
+			padding: 3% 3% 3% 41%;
 		}
 		div.content {
 			width: 50%;
@@ -50,19 +53,24 @@
 		}
 		div.inside-os {
 			width: 30%;
-			background-color: #3396C4;
 			padding: 0 7px;
 		}
+		div.inside-os a {
+			text-decoration: none;
+		}
+		div.text-side {
+			background-color: #3396C4;
+		}
 		.header-img {
-			background-image: url(http://www.lovethispic.com/uploaded_images/22471-Sun-Over-The-Ocean.jpg);
+			background-image: url(http://localhost:4200/login-bg2.jpg);
 			background-repeat: no-repeat;
 			background-attachment: local; 
-			background-position: center center;
+			background-position: 0% 80%;
 			background-size: 100% auto;
-			padding: 5%;
+			padding: 5% 5% 15% 5%;
 		}
 		.header-img img {
-			width: 43%;
+			width: 30%;
 			margin: 0 auto;
 		}
 		.flex {
@@ -75,13 +83,13 @@
 <body>
 	<div class="header-img">
 		<div class="flex flex-vertical">
-			<img src="http://lesdisquaires.com/wp-content/uploads/2012/07/Logo-blanc-fond-transparent.png">
+			<img src="http://localhost:4200/assets/img/logo-hourgantt.png">
 		</div>
 	</div>
 	<div class="identifier-info">
 		<h2>Someone invites you to join {{ $project->name }} !</h2>
 		<div class="card">
-			<p>Find your personnal data bellow :</p>
+			<p>Find your credentials below :</p>
 			<p><span class="strong">Your username </span>: {{ $project->temp_username }}</p>
 			<p><span class="strong">Your temporary password </span>: {{ $project->temp_password }} </p>
 		</div>
@@ -91,7 +99,7 @@
 		<div class="inside-os flex">
 			<a href="https://github.com/lucyjosef/HouraGANTT" target="_blank">
 			<div class="icon-side">
-					<p class="builts-icon"><i class="fab fa-windows"></i></p>
+					<p class="builts-icon"><img src="https://imageog.flaticon.com/icons/png/512/23/23700.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF" height="50px"></i></p>
 				</div>
 				<div class="text-side">
 					<p class="builts-text">Download<br>for Windows</p>
@@ -101,7 +109,7 @@
 		<div class="inside-os flex">
 			<a href="https://github.com/lucyjosef/HouraGANTT" target="_blank">
 				<div class="icon-side">
-					<p class="builts-icon"><i class="fab fa-linux"></i></p>
+					<p class="builts-icon"><img src="https://image.freepik.com/icones-gratuites/linux-logo_318-42235.jpg" height="55px"></p>
 				</div>
 				<div class="text-side">
 					<p class="builts-text">Download<br>for Linux</p>
@@ -111,7 +119,7 @@
 		<div class="inside-os flex">
 			<a href="https://github.com/lucyjosef/HouraGANTT" target="_blank">
 				<div class="icon-side">
-					<p class="builts-icon"><i class="fab fa-apple"></i></p>
+					<p class="builts-icon"><img src="https://imageog.flaticon.com/icons/png/512/23/23656.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF" height="50px"></i></p>
 				</div>
 				<div class="text-side">
 					<p class="builts-text">Download<br>for Macintosh</p>

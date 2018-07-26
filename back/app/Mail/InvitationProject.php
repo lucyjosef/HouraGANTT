@@ -37,7 +37,7 @@ class InvitationProject extends Mailable
     public function build()
     {
         return $this->from('houragantt-2eebaf@inbox.mailtrap.io')
-                    ->subject('New invitation - Come join your team')
+                    ->subject('New invitation - Come back !')
                     ->view('email.invitationProject');
     }
 }
