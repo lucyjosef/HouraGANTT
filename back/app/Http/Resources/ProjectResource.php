@@ -24,6 +24,7 @@ class ProjectResource extends Resource
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at,
             'tasks' => TasksResource::collection($this->task),
+            'resources' => ResourcesResource::collection($this->resources),
         ];
     }
 }

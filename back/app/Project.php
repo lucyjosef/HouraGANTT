@@ -45,7 +45,7 @@ class Project extends Model
      *
      * @return mixed
      */
-    public function resource() {
+    public function resources() {
         return $this->hasMany(Resource::class);
     }
 

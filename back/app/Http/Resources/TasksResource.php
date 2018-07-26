@@ -16,8 +16,8 @@ class TasksResource extends Resource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'starts_at' => $this->starts_at,
+            'text' => $this->name,
+            'start_date' => $this->starts_at,
             'ends_at' => $this->ends_at,
             'is_finished' => $this->is_finished,
             'additional_cost' => $this->additional_cost,
@@ -27,8 +27,7 @@ class TasksResource extends Resource
             'updated_at' => (string) $this->updated_at,
             'project_id' => $this->project_id,
             'speciality_id' => $this->speciality_id,
-            'resource_id' => $this->resource_id,
-            'resource' => new ResourcesResource($this->resource),
+            'resource' => $this->myResource,
         ];
     }
 }

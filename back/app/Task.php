@@ -36,7 +36,7 @@ class Task extends Model
      *
      * @return mixed
      */
-    public function resource() {
-        return $this->belongsTo(Resource::class);
+    public function myResource() {
+        return $this->belongsTo(Resource::class,'resource_id','id');
     }
 }
