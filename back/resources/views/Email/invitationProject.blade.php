@@ -73,57 +73,24 @@
 	</style>
 </head>
 <body>
-	<div class="header-img">
-		<div class="flex flex-vertical">
-			<img src="http://lesdisquaires.com/wp-content/uploads/2012/07/Logo-blanc-fond-transparent.png">
-		</div>
-	</div>
-	<div class="identifier-info">
-		<h2>Someone invites you to join {{ $project->name }} !</h2>
-		<div class="card">
-			<p>Find your personnal data bellow :</p>
-			<p><span class="strong">Your username </span>: {{ $project->temp_username }}</p>
-			<p><span class="strong">Your temporary password </span>: {{ $project->temp_password }} </p>
-		</div>
-	</div>
 
-	<div class="builts flex">
-		<div class="inside-os flex">
-			<a href="https://github.com/lucyjosef/HouraGANTT" target="_blank">
-			<div class="icon-side">
-					<p class="builts-icon"><i class="fab fa-windows"></i></p>
-				</div>
-				<div class="text-side">
-					<p class="builts-text">Download<br>for Windows</p>
-				</div>
-			</a>
+		<div class="header-img">
+			<div class="flex flex-vertical">
+				<img src="http://lesdisquaires.com/wp-content/uploads/2012/07/Logo-blanc-fond-transparent.png">
+			</div>
 		</div>
-		<div class="inside-os flex">
-			<a href="https://github.com/lucyjosef/HouraGANTT" target="_blank">
-				<div class="icon-side">
-					<p class="builts-icon"><i class="fab fa-linux"></i></p>
-				</div>
-				<div class="text-side">
-					<p class="builts-text">Download<br>for Linux</p>
-				</div>
-			</a>
+		<div class="identifier-info">
+			<div class="card">
+				<h2>Someone invites you to join {{ $project->name }} !</h2>
+				<p>Authenticate to see ;)</p>
+			</div>
 		</div>
-		<div class="inside-os flex">
-			<a href="https://github.com/lucyjosef/HouraGANTT" target="_blank">
-				<div class="icon-side">
-					<p class="builts-icon"><i class="fab fa-apple"></i></p>
-				</div>
-				<div class="text-side">
-					<p class="builts-text">Download<br>for Macintosh</p>
-				</div>
-			</a>
-		</div>
-	</div>
 
-	<footer>
-		<div>
-			<p>See you soon !<br>
-			Team HouraGANTT</p>
-		</div>
-	</footer>
+
+		<footer>
+			<div>
+				<p>See you soon !<br>
+				Team HouraGANTT</p>
+			</div>
+		</footer>
 </body>

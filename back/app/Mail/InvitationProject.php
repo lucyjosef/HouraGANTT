@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Invitation extends Mailable
+class InvitationProject extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -38,6 +38,6 @@ class Invitation extends Mailable
     {
         return $this->from('houragantt-2eebaf@inbox.mailtrap.io')
                     ->subject('New invitation - Come join your team')
-                    ->view('email.invitation');
+                    ->view('email.invitationProject');
     }
 }

@@ -26,7 +26,7 @@ class TasksResource extends Resource
             'project_id' => $this->project_id,
             'speciality_id' => $this->speciality_id,
             'resource_id' => $this->resource_id,
-            'resource' => new ResourcesResource($this->resource),
+            'resources' => $this->myResource,
         ];
     }
 }

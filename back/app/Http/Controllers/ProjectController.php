@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Exception;
 use App\Project;
 use App\Mail\Invitation;
 use Illuminate\Http\Request;
+use App\Mail\InvitationProject;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\ProjectResource;
@@ -103,22 +105,44 @@ class ProjectController extends Controller
     public function sendInvitation(Request $request, $id)
     {
         $project = Project::findOrFail($id);
-        $project->temp_username = 'user_'.str_random(5);
+        $project->temp_username = $request->user_email;
         $project->temp_password = str_random(10);
 
-        if(is_array($request->user()->email)) {
-            foreach ($request->user()->email as $mail) {
-                Mail::to($mail)
-                    ->cc('houragantt-2eebaf@inbox.mailtrap.io')
-                    ->send(new Invitation($project));
-            }
-        } else {
-            Mail::to($request->user()->email)
+        try {
+            $user_to_create = [
+                'first_name' => $project->temp_username,
+                'last_name' => NULL,
+                'email' => $request->user_email,
+                'password' => $project->temp_password,
+                'avatar' => NULL,
+                'role_id' => NULL,
+                'rgpd_accepted' => true
+            ];
+
+            $created_user = User::create($user_to_create);
+
+            DB::table('project_user')->insert(
+                [
+                    'user_id' => $created_user->id,
+                    'project_id' => $id
+                ]
+            );
+
+            Mail::to($request->user_email)
                 ->cc('houragantt-2eebaf@inbox.mailtrap.io')
                 ->send(new Invitation($project));
+
+            $message = 'User account created and invitation sent';
+        } catch (Exception $e) {
+
+            Mail::to($request->user_email)
+                ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                ->send(new InvitationProject($project));
+
+            $message = 'This user has already an account, invitation has been sent';
         }
 
-        return response()->json('Invitation sent !', 200);
+        return response()->json($message, 200);
     }
 
 }

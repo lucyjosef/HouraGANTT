@@ -37,6 +37,6 @@ class Resource extends Model
      * @return mixed
      */
     public function task() {
-        return $this->hasOne(Task::class);
+        return $this->hasMany(Task::class);
     }
 }
