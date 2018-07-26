@@ -103,10 +103,17 @@ class ProjectController extends Controller
     public function sendInvitation(Request $request, $id)
     {
         $project = Project::findOrFail($id);
-        $user_mail = ['gloubi@yopmail.com', 'boulga@yopmail.com'];
+        $project->temp_username = 'user_'.str_random(5);
+        $project->temp_password = str_random(10);
 
-        foreach ($user_mail as $mail) {
-            Mail::to($mail)
+        if(is_array($request->user()->email)) {
+            foreach ($request->user()->email as $mail) {
+                Mail::to($mail)
+                    ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                    ->send(new Invitation($project));
+            }
+        } else {
+            Mail::to($request->user()->email)
                 ->cc('houragantt-2eebaf@inbox.mailtrap.io')
                 ->send(new Invitation($project));
         }

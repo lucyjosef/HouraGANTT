@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Project;
+use Illuminate\Http\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -37,7 +38,7 @@ class Invitation extends Mailable
     public function build()
     {
         return $this->from('houragantt-2eebaf@inbox.mailtrap.io')
-                    ->subject('New invitation - Go find your team')
+                    ->subject('New invitation - Come join your team')
                     ->view('email.invitation');
     }
 }
