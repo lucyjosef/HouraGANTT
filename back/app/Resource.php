@@ -28,7 +28,7 @@ class Resource extends Model
      * @return mixed
      */
     public function project() {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class,'project_id','id');
     }
 
     /**
@@ -36,7 +36,7 @@ class Resource extends Model
      *
      * @return mixed
      */
-    public function task() {
-        return $this->hasOne(Task::class);
+    public function tasks() {
+        return $this->hasMany(Task::class);
     }
 }
