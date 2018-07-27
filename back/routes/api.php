@@ -40,4 +40,10 @@ Route::group([
     Route::apiResource('roles', 'RoleController')->only(['destroy', 'store', 'index']);
 
     Route::post('projects/{id}/invite', 'ProjectController@sendInvitation');
+
+    Route::get('project/{id}/downloadPDF', 'ProjectController@generatePDF');
+});
+
+Route::get('/gloubi', function () {
+    return view('pdf');
 });

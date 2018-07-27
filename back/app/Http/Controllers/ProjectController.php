@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use App\User;
 use Exception;
 use App\Project;
@@ -97,8 +98,9 @@ class ProjectController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Send an invitation mail.
      *
+     * @param  Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -107,38 +109,50 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $project->temp_username = $request->user_email;
         $project->temp_password = str_random(10);
-
         try {
             $user_to_create = [
                 'first_name' => $project->temp_username,
                 'email' => $request->user_email,
                 'password' => $project->temp_password
             ];
-
             $created_user = User::create($user_to_create);
-
             DB::table('project_user')->insert(
                 [
                     'user_id' => $created_user->id,
                     'project_id' => $id
                 ]
             );
-
             Mail::to($request->user_email)
                 ->cc('houragantt-2eebaf@inbox.mailtrap.io')
                 ->send(new Invitation($project));
-
             $message = 'User account created and invitation sent';
         } catch (Exception $e) {
-
             Mail::to($request->user_email)
                 ->cc('houragantt-2eebaf@inbox.mailtrap.io')
                 ->send(new InvitationProject($project));
-
             $message = 'This user has already an account, invitation has been sent';
         }
-
         return response()->json($message, 200);
+    }
+
+    /**
+     * Generate a stat report PDF.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function generatePDF($id) {
+        // $project = Project::findOrFail($id);
+        // $project = new ProjectResource(Project::find($id));
+
+        // $project->total_cost = 0;
+        // foreach ($$project->tasks as $key => $value) {
+        //     $project->total_cost += $value->additional_cost;
+        // }
+        // dd($project->total_cost); die;
+
+        $pdf = PDF::loadView('pdf', compact('project'));
+        return $pdf->stream($project->name .'_report.pdf');
     }
 
 }
