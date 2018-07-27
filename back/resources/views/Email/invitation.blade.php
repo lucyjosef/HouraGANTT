@@ -40,9 +40,6 @@
 		p.builts-icon {
 			padding: 9%;
 		}
-		p.builts-icon i {
-			font-size: 4em;
-		}
 		p.builts-text {
 			color: white;
 			padding: 9%;

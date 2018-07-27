@@ -1,5 +1,4 @@
 <head>
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 	<style type="text/css">
 		body {
 			font-family: sans-serif;
@@ -10,13 +9,17 @@
 			color: #3396C4;
 		}
 		footer {
-			background-image: url(http://www.lovethispic.com/uploaded_images/22471-Sun-Over-The-Ocean.jpg);
+			background-image: url(http://localhost:4200/login-bg2.jpg);
 			background-repeat: no-repeat;
 			background-attachment: local;
 			background-position: center bottom;
 			background-size: 100% auto;
-			height: 15%;
-			margin-top: 10%;
+			height: 30%;
+			margin-top: 7%;
+		}
+		footer div {
+			color: white;
+			padding: 3% 3% 3% 41%;
 		}
 		div.content {
 			width: 50%;
@@ -37,9 +40,6 @@
 		p.builts-icon {
 			padding: 9%;
 		}
-		p.builts-icon i {
-			font-size: 4em;
-		}
 		p.builts-text {
 			color: white;
 			padding: 9%;
@@ -50,19 +50,21 @@
 		}
 		div.inside-os {
 			width: 30%;
-			background-color: #3396C4;
 			padding: 0 7px;
 		}
+		div.inside-os a {
+			text-decoration: none;
+		}
 		.header-img {
-			background-image: url(http://www.lovethispic.com/uploaded_images/22471-Sun-Over-The-Ocean.jpg);
+			background-image: url(http://localhost:4200/login-bg2.jpg);
 			background-repeat: no-repeat;
 			background-attachment: local; 
-			background-position: center center;
+			background-position: 0% 80%;
 			background-size: 100% auto;
-			padding: 5%;
+			padding: 5% 5% 15% 5%;
 		}
 		.header-img img {
-			width: 43%;
+			width: 30%;
 			margin: 0 auto;
 		}
 		.flex {
@@ -76,7 +78,7 @@
 
 		<div class="header-img">
 			<div class="flex flex-vertical">
-				<img src="http://lesdisquaires.com/wp-content/uploads/2012/07/Logo-blanc-fond-transparent.png">
+				<img src="http://localhost:4200/assets/img/logo-hourgantt.png">
 			</div>
 		</div>
 		<div class="identifier-info">
