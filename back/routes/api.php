@@ -28,12 +28,16 @@ Route::group([
     Route::post('addResourceTask', 'TaskController@ResourceToTask');
     Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
+
     Route::resource('link', 'LinkController');
 
+    Route::apiResources([
+        'projects' => 'ProjectController',
+        'projects.tasks' => 'TaskController',
+        'projects.resources' => 'ResourceController'
+    ]);
+
+    Route::apiResource('roles', 'RoleController')->only(['destroy', 'store', 'index']);
+
+    Route::post('projects/{id}/invite', 'ProjectController@sendInvitation');
 });
-
-Route::apiResource('projects', 'ProjectController');
-
-Route::apiResource('projects.tasks', 'TaskController');
-
-Route::apiResource('projects.resources', 'ResourceController');

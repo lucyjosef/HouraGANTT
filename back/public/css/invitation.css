@@ -1,0 +1,70 @@
+body {
+	font-family: sans-serif;
+	padding: 0;
+	margin: 0;
+}
+h2 {
+	color: white;
+}
+footer {
+	background-image: url(http://www.lovethispic.com/uploaded_images/22471-Sun-Over-The-Ocean.jpg);
+	background-repeat: no-repeat;
+	background-attachment: local;
+	background-position: center bottom;
+	background-size: 100% auto;
+	height: 15%;
+	margin-top: 10%;
+}
+div.content {
+	width: 50%;
+	margin: 0 auto;
+}
+div.identifier-info {
+	padding: 10%;
+	width: 80%;
+}
+div.card {
+	padding: 21px;
+	box-shadow: 1px 3px 23px -6px grey;
+}
+.strong {
+	color: #3396C4;
+	font-weight: bold;
+}
+p.builts-icon {
+	padding: 9%;
+}
+p.builts-icon i {
+	font-size: 4em;
+}
+p.builts-text {
+	color: white;
+	padding: 9%;
+}
+div.builts {
+	padding: 2% 10%;
+	width: 80%;
+}
+div.inside-os {
+	width: 30%;
+	background-color: #3396C4;
+	padding: 0 7px;
+}
+.header-img {
+	height: 30%;
+	background-image: url(http://www.lovethispic.com/uploaded_images/22471-Sun-Over-The-Ocean.jpg);
+	background-repeat: no-repeat;
+	background-attachment: local; 
+	background-position: center center;
+	background-size: 100% auto;
+	padding: 10%;
+}
+.header-img img {
+	width: 43%;
+	margin: 0 auto;
+}
+.flex {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between; 
+}

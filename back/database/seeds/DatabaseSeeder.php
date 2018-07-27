@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         DB::table('roles')->insert([
         	'name' => 'Testeur',
+            'user_id' => 1,
             'created_at' => date('Y-m-d H:m:s'),
         ]);
 
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
             'password' => 'Azerty123',
             'role_id' => 1,
             'rgpd_accepted' => true,
+            'remember_token' => str_random(25),
             'created_at' => date('Y-m-d H:m:s'),
         ]);
 

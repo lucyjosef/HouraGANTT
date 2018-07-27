@@ -21,7 +21,6 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->unsignedInteger('role_id')->nullable();
-            $table->foreign('role_id')->references('id')->on('roles');
             $table->boolean('rgpd_accepted')->default(true);
             $table->rememberToken();
             $table->timestamps();

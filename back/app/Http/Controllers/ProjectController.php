@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Project;
 use App\User;
+use Exception;
+use App\Project;
+use App\Mail\Invitation;
 use Illuminate\Http\Request;
+use App\Mail\InvitationProject;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
@@ -90,6 +94,51 @@ class ProjectController extends Controller
     {
         DB::table('projects')->where('id', $id)->delete();
         return response()->json(null, 204);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function sendInvitation(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+        $project->temp_username = $request->user_email;
+        $project->temp_password = str_random(10);
+
+        try {
+            $user_to_create = [
+                'first_name' => $project->temp_username,
+                'email' => $request->user_email,
+                'password' => $project->temp_password
+            ];
+
+            $created_user = User::create($user_to_create);
+
+            DB::table('project_user')->insert(
+                [
+                    'user_id' => $created_user->id,
+                    'project_id' => $id
+                ]
+            );
+
+            Mail::to($request->user_email)
+                ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                ->send(new Invitation($project));
+
+            $message = 'User account created and invitation sent';
+        } catch (Exception $e) {
+
+            Mail::to($request->user_email)
+                ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                ->send(new InvitationProject($project));
+
+            $message = 'This user has already an account, invitation has been sent';
+        }
+
+        return response()->json($message, 200);
     }
 
 }
