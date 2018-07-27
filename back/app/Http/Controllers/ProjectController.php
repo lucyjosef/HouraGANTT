@@ -32,6 +32,12 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        $token = $request->header('Authorization');
+        $token = substr($token, 6);
+        $token = trim($token);
+        $user = getUserInfo($token);
+        
+        $user_id = $user->id;
         $project = new Project();
         $project->name = $request->name;
         $project->description = $request->description;
@@ -39,7 +45,7 @@ class ProjectController extends Controller
         $project->link = $request->link;
         $project->billing = $request->billing;
         $project->save();
-
+ 
         // $right_id = DB::table('project_user')->where([
         //     ['user_id', '=', $request->user_id],
         //     ['project_id', '=', $project->id],
@@ -47,7 +53,7 @@ class ProjectController extends Controller
 
         DB::table('project_user')->insert(
             [
-                'user_id' => auth()->user()->id,
+                'user_id' => $user_id,
                 'project_id' => $project->id
             ]
         );

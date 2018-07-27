@@ -67,6 +67,7 @@ class TaskController extends Controller
         if($checkRight){
             $task = Task::find($id);
             $task->name = $request->text;
+            
             $task->starts_at = $request->start_date;
             $task->duration = $request->duration;
             $task->progress = $request->has("progress") ? $request->progress : 0;
@@ -87,13 +88,14 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function destroy(Request $request,$id,$project)
+    public function destroy(Request $request,$project,$id)
     {
 
         $user_id = auth()->user()->id;
         $checkRight = checkRight($user_id,$project);
         if($checkRight){
-            DB::table('tasks')->where('id', $id)->delete();
+            DB::table('tasks')->where('id', $id)->delete(); 
+
             InsertLog("deleteTask",$id,$user_id);
             return response()->json(null, 204);
         }else{
