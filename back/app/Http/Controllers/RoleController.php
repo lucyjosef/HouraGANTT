@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Resources\RoleResource;
+use App\Http\Resources\RolesResource;
 
 class RoleController extends Controller
 {
@@ -16,7 +17,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return RoleResource::collection(Role::paginate(25));
+        return RolesResource::collection(Role::all());
     }
 
     /**
@@ -27,33 +28,11 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $role = new Role($request[0]);
+        $role = new Role();
+        $role->name = $request->name;
+        $role->user_id = $request->user_id;
         $role->save();
         return $role;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Role  $role
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        return DB::table('roles')->where('id', $id)->get();
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Role  $role
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        DB::table('roles')->where('id', $id)->update($request[0]);
-        return response()->json([$request[0], 200]);
     }
 
     /**

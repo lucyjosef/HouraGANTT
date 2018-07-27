@@ -27,7 +27,8 @@ class TasksResource extends Resource
             'updated_at' => (string) $this->updated_at,
             'project_id' => $this->project_id,
             'speciality_id' => $this->speciality_id,
-            'resource' => $this->myResource,
+            'resource_id' => $this->resource_id,
+            'resources' => $this->myResource,
         ];
     }
 }
