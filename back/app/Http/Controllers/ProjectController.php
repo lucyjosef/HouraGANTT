@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Resource;
+use App\Task;
 use App\User;
 use Exception;
 use App\Project;
@@ -140,6 +142,30 @@ class ProjectController extends Controller
         }
 
         return response()->json($message, 200);
+    }
+    public function billingCost($id){
+        $data = Task::where('project_id', $id)
+            ->get();
+        $billingTotal = 0;
+        $billingPerTask = 0;
+        foreach ($data as $value) {
+            $addDays = addDayswithdate($value->starts_at,$value->duration);
+            $workDays = getWorkdays($value->starts_at,$addDays);
+            $hourPerday = 7 * $workDays;
+             if($value->additional_cost){
+                 $billingPerTask = $billingPerTask+$value->additional_cost;
+             }
+            if($value->resource_id){
+                $resource = Resource::find($value->resource_id);
+                $rate_explode = explode('.',$resource->ratio);
+                $billing = $hourPerday * intval($rate_explode[0]);
+                $billingPerTask = $billing + $billingPerTask;
+            }
+            $billingTotal+=$billingPerTask;
+            $billingPerTask =0;
+        }
+       echo $billingTotal;
+
     }
 
 }

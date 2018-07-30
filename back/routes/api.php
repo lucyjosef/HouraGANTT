@@ -42,3 +42,4 @@ Route::group([
 
     Route::post('projects/{id}/invite', 'ProjectController@sendInvitation');
 });
+Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
