@@ -149,22 +149,22 @@ class ProjectController extends Controller
         $billingTotal = 0;
         $billingPerTask = 0;
         foreach ($data as $value) {
-            $addDays = addDayswithdate($value->starts_at,$value->duration);
-            $workDays = getWorkdays($value->starts_at,$addDays);
+            $start_end = addDayswithdate($value->starts_at,$value->duration);// return the task end_date
+            $workDays = getWorkdays($value->starts_at,$start_end); // return the task workday exclude week-end
             $hourPerday = 7 * $workDays;
              if($value->additional_cost){
-                 $billingPerTask = $billingPerTask+$value->additional_cost;
+                 $billingPerTask = $billingPerTask+$value->additional_cost; // return the billing when additionalcost is defined
              }
             if($value->resource_id){
                 $resource = Resource::find($value->resource_id);
                 $rate_explode = explode('.',$resource->ratio);
                 $billing = $hourPerday * intval($rate_explode[0]);
-                $billingPerTask = $billing + $billingPerTask;
+                $billingPerTask = $billing + $billingPerTask; // return the billing when resource is defined
             }
-            $billingTotal+=$billingPerTask;
+            $billingTotal+=$billingPerTask; //return the billing per task
             $billingPerTask =0;
         }
-       echo $billingTotal;
+       return $billingTotal; //return the Total billing
 
     }
 
