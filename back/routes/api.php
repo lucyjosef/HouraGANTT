@@ -43,9 +43,8 @@ Route::group([
     Route::post('projects/{id}/invite', 'ProjectController@sendInvitation');
 
     Route::get('project/{id}/downloadPDF', 'ProjectController@generatePDF');
+
+    Route::get('project/{id}/resourceDetail', 'ResourceController@resourceDetail');
 });
 
-Route::get('/gloubi', function () {
-    return view('pdf');
-});
 Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');

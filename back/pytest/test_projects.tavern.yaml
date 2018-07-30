@@ -1,0 +1,41 @@
+test_name: HouraGANTT Project tester
+
+stages:
+  - name: User1 login, save bearer token
+    request:
+      url: http://192.168.33.10/api/login
+      method: POST
+      data:
+        email: lucy@yopmail.com
+        password: Azerty123
+      headers:
+        Content-Type: application/x-www-form-urlencoded
+    response:
+      status_code: 200
+      save:
+        body:
+          access_token_1: access_token
+          user_id_1: user.id
+
+  - name: User1 creates project1
+    request: 
+      url: http://192.168.33.10/api/projects
+      method: POST
+      data:
+        name: shared
+        duration_days: 123
+        description: idk
+        link: somelink
+        billing: some billing
+        user_id: {user_id_1}
+      headers: &default_headers_1
+        Content-Type: application/x-www-form-urlencoded
+        Authorization: "Bearer {access_token_1}"
+    response:
+      status_code: 201
+      save:
+        body:
+          project_id_1: id
+
+
+

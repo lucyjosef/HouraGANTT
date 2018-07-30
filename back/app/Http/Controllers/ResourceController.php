@@ -6,6 +6,7 @@ use App\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ResourcesResource;
+use App\Http\Resources\ProjectResource;
 
 class ResourceController extends Controller
 {
@@ -109,5 +110,30 @@ class ResourceController extends Controller
 
         }
 
+    }
+
+    public function resourceDetail($id) {
+        $resources = DB::table('resources')->where('project_id', $id)->get();
+        $render = [];
+        foreach ($resources as $key => $value) {
+
+            $render[$key]['name'] = $value->name;
+            $render[$key]['job'] = $value->job;
+            $render[$key]['ratio'] = $value->ratio;
+
+            $task = DB::table('tasks')->where('resource_id', $value->id)->get();
+            $render[$key]["nb_tasks"] = count($task);
+            $nb_hours = 0;
+            foreach ($task as $subvalue) {
+                $start_end = addDayswithdate($subvalue->starts_at,$subvalue->duration);// return the task end_date
+                $workDays = getWorkdays($subvalue->starts_at,$start_end); // return the task workday exclude week-end
+                $hourPerday = 7 * $workDays;
+                $nb_hours += $hourPerday;
+            }
+            $render[$key]["nb_hours"] = $nb_hours;
+            $render[$key]["total_cost"] = $nb_hours * $value->ratio;
+            
+        }
+        return response()->json($render, 200);
     }
 }

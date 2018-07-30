@@ -40,7 +40,8 @@ class ProjectController extends Controller
         $token = trim($token);
         $user = getUserInfo($token);
         
-        $user_id = $user->id;
+        // $user_id = $user->id;
+        $user_id = $request->user_id;
         $project = new Project();
         $project->name = $request->name;
         $project->description = $request->description;
@@ -145,15 +146,14 @@ class ProjectController extends Controller
         $billingPerTask = 0;
         foreach ($data as $value) {
             $start_end = addDayswithdate($value->starts_at,$value->duration);// return the task end_date
-            $workDays = getWorkdays($value->starts_at,$value->start_end); // return the task workday exclude week-end
+            $workDays = getWorkdays($value->starts_at,$start_end); // return the task workday exclude week-end
             $hourPerday = 7 * $workDays;
             if($value->additional_cost){
                 $billingPerTask = $billingPerTask+$value->additional_cost; // return the billing when additionalcost is defined
             }
             if($value->resource_id){
                 $resource = Resource::find($value->resource_id);
-                $rate_explode = explode('.',$resource->ratio);
-                $billing = $hourPerday * intval($rate_explode[0]);
+                $billing = $hourPerday * $resource->ratio;
                 $billingPerTask = $billing + $billingPerTask; // return the billing when resource is defined
             }
             $billingTotal+=$billingPerTask; //return the billing per task
