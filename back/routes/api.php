@@ -41,5 +41,8 @@ Route::group([
     Route::apiResource('roles', 'RoleController')->only(['destroy', 'store', 'index']);
 
     Route::post('projects/{id}/invite', 'ProjectController@sendInvitation');
+    Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
+    Route::get('downloadme', 'AuthController@DownloadUserInfo');
+    Route::get('forgotme', 'AuthController@ForgetMe');
+
 });
-Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
