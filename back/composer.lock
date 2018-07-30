@@ -1049,7 +1049,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-07-26 16:01:26"
+            "time": "2018-07-26T16:01:26+00:00"
         },
         {
             "name": "laravel/tinker",

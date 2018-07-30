@@ -30,6 +30,7 @@ Route::group([
     Route::post('resetPassword', 'ChangePasswordController@process');
 
     Route::resource('link', 'LinkController');
+    Route::resource('task', 'TaskController');
 
     Route::apiResources([
         'projects' => 'ProjectController',
@@ -47,3 +48,4 @@ Route::group([
 Route::get('/gloubi', function () {
     return view('pdf');
 });
+Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
