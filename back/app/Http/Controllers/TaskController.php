@@ -31,7 +31,7 @@ class TaskController extends Controller
      */
     public function store(Request $request,$project)
     { 
-        if(checkProjectRight($project->id, auth()->user()->id)) {
+        if(checkProjectRight($project, auth()->user()->id)) {
             request()->validate([
                 'text' => 'required',
                 'start_date' => 'required',
@@ -76,7 +76,7 @@ class TaskController extends Controller
     public function update(Request $request, $project_id, $id)
     {
         if(checkProjectRight($project_id, auth()->user()->id)) {
-            $checkRight = checkRight(auth()->user()->id,$project);
+            $checkRight = checkRight(auth()->user()->id,$project_id);
             if($checkRight){
                 $task = Task::find($id);
                 $task->name = $request->text;
