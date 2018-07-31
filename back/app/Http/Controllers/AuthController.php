@@ -1,12 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Resource;
+use App\Task;
+use Illuminate\Http\Request;
 
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SignUpRequest;
 use App\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 
 class AuthController extends Controller
@@ -95,5 +101,61 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => auth()->user()
         ]);
+    }
+
+    public function updateProfil(Request $request,$id){
+        $user = User::find(auth()->user()->id);
+        $user->name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->password =  Hash::make($request->password);
+        $user->avatar = $request->avatar;
+        $user->rgpd_accepted = $request->rgpd_accepted;
+        $user->save();
+        Storage::put('avatars/1', $request->avatar);
+    }
+
+    public function DownloadUserInfo(Request $request)
+    {
+        $user = DB::table('users')->select('first_name', 'email as user_email','last_name','avatar')
+            ->where('id', '=', 1)
+            ->get();
+        $project_user = DB::table('project_user')->where('user_id', '=',auth()->user()->id)->get();
+        $projects = array();
+        if($project_user){
+            foreach ($project_user as $project){
+                $each_project = DB::table('projects')->where('id', '=',$project->id)->first();
+                if($project->project_owner === 0){
+                    $each_project->project_status = "owner";
+                }else{
+                    $each_project->project_status = "invited";
+                }
+                $projects[] = $each_project;
+            }
+        }
+        $filename = 'data_'.auth()->user()->id.'.json';
+        $json =  response()->json(['user' => $user,'projects'=> $projects]);
+        $storage = Storage::put($filename, $json);
+        return response()->json(['message' => $storage]);
+    }
+
+    public function ForgetMe()
+    {
+        $valid = true;
+        $project_user = DB::table('project_user')->where('user_id', '=',auth()->user()->id)->get();
+        if($project_user){
+            foreach ($project_user as $project){
+                $projectId = $project->project_id;
+                if($project->project_owner === 0){
+                    $valid = Task::where('project_id', $projectId)->delete();
+                    $valid = Resource::where('project_id', $projectId)->delete();
+                    $valid = DB::table('project_user')->where('project_id', '=', $projectId)->delete();
+                    $valid = DB::table('projects')->where('id', '=', $projectId)->delete();
+                }else{
+                    $valid = DB::table('project_user')->where('project_id', '=', $projectId)->delete();
+                }
+            }
+        }
+        $valid = DB::table('users')->where('id', '=', auth()->user()->id)->delete();
+        return response()->json(['message' => $valid]);
     }
 }

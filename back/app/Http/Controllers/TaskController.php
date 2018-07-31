@@ -67,10 +67,14 @@ class TaskController extends Controller
         if($checkRight){
             $task = Task::find($id);
             $task->name = $request->text;
-            
             $task->starts_at = $request->start_date;
             $task->duration = $request->duration;
             $task->progress = $request->has("progress") ? $request->progress : 0;
+            if($request->resource_id == 0){
+                $task->resource_id = null;
+            }else{
+                $task->resource_id = $request->resource_id;
+            }
             $task->save();
             return response()->json([
                 "action"=> "updated"

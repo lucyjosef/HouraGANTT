@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/back/app" isTestSource="false" packagePrefix="App\" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/asm89/stack-cors" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/barryvdh/laravel-cors" />
+      <excludeFolder url="file://$MODULE_DIR$/back/vendor/barryvdh/laravel-dompdf" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/dnoegel/php-xdg-base-dir" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/doctrine/cache" />
@@ -14,6 +15,7 @@
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/doctrine/inflector" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/doctrine/instantiator" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/doctrine/lexer" />
+      <excludeFolder url="file://$MODULE_DIR$/back/vendor/dompdf/dompdf" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/dragonmantank/cron-expression" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/egulias/email-validator" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/erusev/parsedown" />
@@ -36,6 +38,8 @@
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/paragonie/random_compat" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/phar-io/manifest" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/phar-io/version" />
+      <excludeFolder url="file://$MODULE_DIR$/back/vendor/phenx/php-font-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/back/vendor/phenx/php-svg-lib" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/phpdocumentor/reflection-common" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/phpdocumentor/reflection-docblock" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/phpdocumentor/type-resolver" />
@@ -52,6 +56,7 @@
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/psr/simple-cache" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/psy/psysh" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/ramsey/uuid" />
+      <excludeFolder url="file://$MODULE_DIR$/back/vendor/sabberworm/php-css-parser" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/sebastian/code-unit-reverse-lookup" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/sebastian/comparator" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/sebastian/diff" />
@@ -63,6 +68,7 @@
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/sebastian/recursion-context" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/sebastian/resource-operations" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/sebastian/version" />
+      <excludeFolder url="file://$MODULE_DIR$/back/vendor/sunra/php-simple-html-dom-parser" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/swatkins/laravel-gantt" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/swiftmailer/swiftmailer" />
       <excludeFolder url="file://$MODULE_DIR$/back/vendor/symfony/console" />
