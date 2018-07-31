@@ -47,9 +47,8 @@ Route::group([
     Route::post('verify', 'VerifyController@verify');
     Route::get('project/{id}/downloadPDF', 'ProjectController@generatePDF');
 
-    Route::get('/gloubi', function () {
-        return view('pdf');
-    });
     Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
+
+    Route::get('project/{id}/resourceDetail', 'ResourceController@resourceDetail');
 });
 

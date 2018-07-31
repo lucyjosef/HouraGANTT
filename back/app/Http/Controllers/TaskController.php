@@ -14,9 +14,13 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        return TasksResource::collection(Task::all());
+        if(checkProjectRight($id, auth()->user()->id)) {
+            return TasksResource::collection(Task::all());
+        } else {
+            return response()->json(['Forbidden', 403]);
+        }
     }
 
     /**
@@ -26,20 +30,25 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request,$project)
-    { request()->validate([
-        'text' => 'required',
-        'start_date' => 'required',
-        'duration' => 'required'
-    ]);
-        $data = $request->all();
-        $data['project_id'] = $project;
-        $data['name'] = $request->text;
-        $data['starts_at'] = $request->start_date;
-        $tasks = Task::create($data);
-        return response()->json([
-            'status' => 'success',
-            'data' => $tasks
-        ]);
+    { 
+        if(checkProjectRight($project->id, auth()->user()->id)) {
+            request()->validate([
+                'text' => 'required',
+                'start_date' => 'required',
+                'duration' => 'required'
+            ]);
+            $data = $request->all();
+            $data['project_id'] = $project;
+            $data['name'] = $request->text;
+            $data['starts_at'] = $request->start_date;
+            $tasks = Task::create($data);
+            return response()->json([
+                'status' => 'success',
+                'data' => $tasks
+            ]);
+        } else {
+            return response()->json(['Forbidden', 403]);
+        }
     }
 
     /**
@@ -48,9 +57,13 @@ class TaskController extends Controller
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($project_id, $id)
     {
-        return new TasksResource(Task::find($id));
+        if(checkProjectRight($project_id, auth()->user()->id)) {
+            return new TasksResource(Task::find($id));
+        } else {
+            return response()->json(['Forbidden', 403]);
+        }
     }
 
     /**
@@ -60,28 +73,27 @@ class TaskController extends Controller
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id,$project)
+    public function update(Request $request, $project_id, $id)
     {
-
-        $checkRight = checkRight(auth()->user()->id,$project);
-        if($checkRight){
-            $task = Task::find($id);
-            $task->name = $request->text;
-            $task->starts_at = $request->start_date;
-            $task->duration = $request->duration;
-            $task->progress = $request->has("progress") ? $request->progress : 0;
-            if($request->resource_id == 0){
-                $task->resource_id = null;
-            }else{
-                $task->resource_id = $request->resource_id;
+        if(checkProjectRight($project_id, auth()->user()->id)) {
+            $checkRight = checkRight(auth()->user()->id,$project_id);
+            if($checkRight){
+                $task = Task::find($id);
+                $task->name = $request->text;
+                
+                $task->starts_at = $request->start_date;
+                $task->duration = $request->duration;
+                $task->progress = $request->has("progress") ? $request->progress : 0;
+                $task->additional_cost = $request->has("additional_cost") ? $request->progress : 0.00;
+                $task->save();
+                return response()->json([
+                    "action"=> "updated"
+                ]);
+            } else{
+                return response()->json(["message"=> "Unauthorized action"],401);
             }
-            $task->save();
-            return response()->json([
-                "action"=> "updated"
-            ]);
-        } else{
-            return response()->json(["message"=> "Unauthorized action"],401);
-
+        } else {
+            return response()->json(['Forbidden', 403]);
         }
     }
 

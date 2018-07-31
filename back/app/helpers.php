@@ -71,3 +71,15 @@ function addDayswithdate($date,$days){
 function removeTime($date){
     date("Y-m-d", strtotime($date));
 }
+
+function checkProjectRight($id_project, $id_user) {
+  $render = DB::table('project_user')
+            ->where('project_id', $id_project)
+            ->where('user_id', $id_user)
+            ->first();
+  if($render) {
+      return true;
+  } else {
+      return false;
+  }
+}
