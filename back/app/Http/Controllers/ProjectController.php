@@ -8,6 +8,7 @@ use App\Task;
 use App\User;
 use Exception;
 use App\Project;
+
 use App\Mail\Invitation;
 use Illuminate\Http\Request;
 use App\Mail\InvitationProject;
@@ -17,6 +18,7 @@ use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -24,11 +26,12 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        if(checkProjectRight($id, auth()->user()->id)) {
-            return ProjectResource::collection(Project::all());
-        } else {
-            return response()->json(['Forbidden', 403]);
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json(['Forbidden', 403]);
         }
+        return ProjectResource::collection(Project::all());
     }
 
     /**
@@ -45,7 +48,7 @@ class ProjectController extends Controller
         $user = getUserInfo($token);
         
         // $user_id = $user->id;
-        $user_id = $request->user_id;
+        $user_id = auth()->user()->id;
         $project = new Project();
         $project->name = $request->name;
         $project->description = $request->description;
@@ -77,11 +80,12 @@ class ProjectController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(checkProjectRight($id, auth()->user()->id)) {
-            return new ProjectResource(Project::find($id));
-        } else {
-            return response()->json(['Forbidden', 403]);
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json(['Forbidden', 403]);
         }
+        return new ProjectResource(Project::find($id));
     }
 
     /**
@@ -93,12 +97,13 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(checkProjectRight($id, auth()->user()->id)) {
-            DB::table('projects')->where('id', $id)->update($request[0]);
-            return response()->json([$request[0], 200]);
-        } else {
-            return response()->json(['Forbidden', 403]);
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json(['Forbidden', 403]);
         }
+        DB::table('projects')->where('id', $id)->update($request[0]);
+        return response()->json([$request[0], 200]);
     }
 
     /**
@@ -108,13 +113,14 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
-    {  
-        if(checkProjectRight($id, auth()->user()->id)) {
-            DB::table('projects')->where('id', $id)->delete();
-            return response()->json(null, 204);
-        } else {
-            return response()->json(['Forbidden', 403]);
-        }
+    {
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json(['Forbidden', 403]);
+        } 
+        DB::table('projects')->where('id', $id)->delete();
+        return response()->json(null, 204);
     }
 
     /**
@@ -126,46 +132,47 @@ class ProjectController extends Controller
      */
     public function sendInvitation(Request $request, $id)
     {
-        if(checkProjectRight($id, auth()->user()->id)) {
-            $project = Project::findOrFail($id);
-            $project->temp_username = $request->user_email;
-            $project->temp_password = str_random(10);
-            try {
-                $user_to_create = [
-                    'first_name' => $project->temp_username,
-                    'email' => $request->user_email,
-                    'password' => $project->temp_password
-                ];
-                $created_user = User::create($user_to_create);
-                DB::table('project_user')->insert(
-                    [
-                        'user_id' => $created_user->id,
-                        'project_id' => $id,
-                        'project_owner' => 1
-                    ]
-                );
-                Mail::to($request->user_email)
-                    ->cc('houragantt-2eebaf@inbox.mailtrap.io')
-                    ->send(new Invitation($project));
-                $message = 'User account created and invitation sent';
-            } catch (Exception $e) {
-                $user = db::table('users')->select('id')->where('email', $request->user_email)->first();
-                DB::table('project_user')->insert(
-                    [
-                        'user_id' => $user->id,
-                        'project_id' => $id,
-                        'project_owner' => 1
-                    ]
-                );
-                Mail::to($request->user_email)
-                    ->cc('houragantt-2eebaf@inbox.mailtrap.io')
-                    ->send(new InvitationProject($project));
-                $message = 'This user has already an account, invitation has been sent';
-            }
-            return response()->json($message, 200);
-        } else {
-            return response()->json(['Forbidden', 403]);
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json(['Forbidden', 403]);
+        } 
+        $project = Project::findOrFail($id);
+        $project->temp_username = $request->user_email;
+        $project->temp_password = str_random(10);
+        try {
+            $user_to_create = [
+                'first_name' => $project->temp_username,
+                'email' => $request->user_email,
+                'password' => $project->temp_password
+            ];
+            $created_user = User::create($user_to_create);
+            DB::table('project_user')->insert(
+                [
+                    'user_id' => $created_user->id,
+                    'project_id' => $id,
+                    'project_owner' => 1
+                ]
+            );
+            Mail::to($request->user_email)
+                ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                ->send(new Invitation($project));
+            $message = 'User account created and invitation sent';
+        } catch (Exception $e) {
+            $user = db::table('users')->select('id')->where('email', $request->user_email)->first();
+            DB::table('project_user')->insert(
+                [
+                    'user_id' => $user->id,
+                    'project_id' => $id,
+                    'project_owner' => 1
+                ]
+            );
+            Mail::to($request->user_email)
+                ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                ->send(new InvitationProject($project));
+            $message = 'This user has already an account, invitation has been sent';
         }
+        return response()->json($message, 200);
     }
 
     public function billingCost($id){

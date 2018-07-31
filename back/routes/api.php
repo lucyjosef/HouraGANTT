@@ -50,5 +50,7 @@ Route::group([
     Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
 
     Route::get('project/{id}/resourceDetail', 'ResourceController@resourceDetail');
+
+    Route::get('test', 'ProjectController@test');
 });
 
