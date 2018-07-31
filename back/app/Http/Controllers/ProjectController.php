@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use App\Resource;
 use App\Task;
 use App\User;
@@ -100,8 +101,9 @@ class ProjectController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Send an invitation mail.
      *
+     * @param  Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -110,39 +112,32 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $project->temp_username = $request->user_email;
         $project->temp_password = str_random(10);
-
         try {
             $user_to_create = [
                 'first_name' => $project->temp_username,
                 'email' => $request->user_email,
                 'password' => $project->temp_password
             ];
-
             $created_user = User::create($user_to_create);
-
             DB::table('project_user')->insert(
                 [
                     'user_id' => $created_user->id,
                     'project_id' => $id
                 ]
             );
-
             Mail::to($request->user_email)
                 ->cc('houragantt-2eebaf@inbox.mailtrap.io')
                 ->send(new Invitation($project));
-
             $message = 'User account created and invitation sent';
         } catch (Exception $e) {
-
             Mail::to($request->user_email)
                 ->cc('houragantt-2eebaf@inbox.mailtrap.io')
                 ->send(new InvitationProject($project));
-
             $message = 'This user has already an account, invitation has been sent';
         }
-
         return response()->json($message, 200);
     }
+
     public function billingCost($id){
         $data = Task::where('project_id', $id)
             ->get();
@@ -150,11 +145,11 @@ class ProjectController extends Controller
         $billingPerTask = 0;
         foreach ($data as $value) {
             $start_end = addDayswithdate($value->starts_at,$value->duration);// return the task end_date
-            $workDays = getWorkdays($value->starts_at,$start_end); // return the task workday exclude week-end
+            $workDays = getWorkdays($value->starts_at,$value->start_end); // return the task workday exclude week-end
             $hourPerday = 7 * $workDays;
-             if($value->additional_cost){
-                 $billingPerTask = $billingPerTask+$value->additional_cost; // return the billing when additionalcost is defined
-             }
+            if($value->additional_cost){
+                $billingPerTask = $billingPerTask+$value->additional_cost; // return the billing when additionalcost is defined
+            }
             if($value->resource_id){
                 $resource = Resource::find($value->resource_id);
                 $rate_explode = explode('.',$resource->ratio);
@@ -165,7 +160,46 @@ class ProjectController extends Controller
             $billingPerTask =0;
         }
        return $billingTotal; //return the Total billing
+   }
 
+    /**
+     * Generate a stat report PDF.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function generatePDF($id) {
+
+        $project = $this->get_json_from('http://192.168.33.10/api/projects/' . $id);
+        $project->total_cost = $this->billingCost($id);
+        
+        $project->how_many_tasks = 0;
+        foreach ($project->data->tasks as $key => $value) {
+            $project->how_many_tasks += 1;
+        }
+
+        $project->how_many_resources = 0;
+        foreach ($project->data->resources as $key => $value) {
+            $project->how_many_resources += 1;
+        }
+
+        $pdf = PDF::loadView('pdf', compact('project'));
+        return $pdf->stream($project->data->name .'_report.pdf');
+    }
+
+    /**
+     * Retrieve the json of an endpoint.
+     *
+     * @param  string  $url
+     * @return \Illuminate\Http\Response
+     */
+    protected function get_json_from($url) {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => $url
+        ));
+        return json_decode(curl_exec($curl));
     }
 
 }

@@ -45,4 +45,11 @@ Route::group([
     Route::get('downloadme', 'AuthController@DownloadUserInfo');
     Route::get('forgotme', 'AuthController@ForgetMe');
     Route::post('verify', 'VerifyController@verify');
+    Route::get('project/{id}/downloadPDF', 'ProjectController@generatePDF');
+
+    Route::get('/gloubi', function () {
+        return view('pdf');
+    });
+    Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
 });
+
