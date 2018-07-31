@@ -1,0 +1,71 @@
+test_name: HouraGANTT Tasks tester
+
+stages:
+  - name: User login, save bearer token
+    request:
+      url: http://192.168.33.10/api/login
+      method: POST
+      data:
+        email: lucy@yopmail.com
+        password: Azerty123
+      headers:
+        Content-Type: application/x-www-form-urlencoded
+    response:
+      status_code: 200
+      save:
+        body:
+          access_token_1: access_token
+          user_id_1: user.id
+
+  - name: User creates project1
+    request: 
+      url: http://192.168.33.10/api/projects
+      method: POST
+      data:
+        name: tavern
+        duration_days: 123
+        description: idk
+        link: somelink
+        billing: some billing
+        user_id: "{user_id_1}"
+      headers: &default_headers_1
+        Content-Type: application/x-www-form-urlencoded
+        Authorization: "Bearer {access_token_1}"
+    response:
+      status_code: 201
+      save:
+        body:
+          project_id: id
+
+  - name: User creates task in project
+    request: 
+      url: http://192.168.33.10/api/projects/{project_id}/tasks
+      method: POST
+      data:
+        name: tavern task 
+        starts_at: "2018-10-14 09:00:00"
+        ends_at: "2018-11-14 09:00:00"
+        is_finished: false
+        additional_cost: 77.50
+        project_id: "{project_id}"
+        speciality_id: 1
+        resource_id: 1
+      headers: *default_headers_1
+    response:
+      status_code: 201
+      save:
+        body:
+          task_id: id
+
+  # - name: User update its task
+  #   request:
+  #     url: http://192.168.33.10/api/projects/{project_id_1}
+  #     method: GET
+  #     headers: &default_headers_2
+  #         Content-Type: application/x-www-form-urlencoded
+  #         Authorization: "Bearer {access_token_2}"
+  #   response:
+  #     status_code: 200
+
+ 
+

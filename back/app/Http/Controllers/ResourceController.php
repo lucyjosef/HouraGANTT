@@ -66,7 +66,7 @@ class ResourceController extends Controller
         $token = $request->header('Authorization');
         $token = substr($token, 6);
         $token = trim($token);
-        $user = getUserInfo($token);
+        $user = getUserInfo($token); 
         $user_id = $user->id;
         $checkRight = checkRight($user_id,$project);
         if($checkRight){
@@ -124,15 +124,17 @@ class ResourceController extends Controller
             $task = DB::table('tasks')->where('resource_id', $value->id)->get();
             $render[$key]["nb_tasks"] = count($task);
             $nb_hours = 0;
+            $nb_days = 0;
             foreach ($task as $subvalue) {
                 $start_end = addDayswithdate($subvalue->starts_at,$subvalue->duration);// return the task end_date
                 $workDays = getWorkdays($subvalue->starts_at,$start_end); // return the task workday exclude week-end
                 $hourPerday = 7 * $workDays;
                 $nb_hours += $hourPerday;
+                $nb_days += $workDays;
             }
             $render[$key]["nb_hours"] = $nb_hours;
             $render[$key]["total_cost"] = $nb_hours * $value->ratio;
-            
+            $render[$key]["nb_days"] = $nb_days;
         }
         return response()->json($render, 200);
     }

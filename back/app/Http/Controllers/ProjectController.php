@@ -22,9 +22,13 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ProjectResource::collection(Project::all());
+        if(checkProjectRight($id, auth()->user()->id)) {
+            return ProjectResource::collection(Project::all());
+        } else {
+            return response()->json(['Forbidden', 403]);
+        }
     }
 
     /**
@@ -71,9 +75,13 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        return new ProjectResource(Project::find($id));
+        if(checkProjectRight($id, auth()->user()->id)) {
+            return new ProjectResource(Project::find($id));
+        } else {
+            return response()->json(['Forbidden', 403]);
+        }
     }
 
     /**
@@ -85,8 +93,12 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        DB::table('projects')->where('id', $id)->update($request[0]);
-        return response()->json([$request[0], 200]);
+        if(checkProjectRight($id, auth()->user()->id)) {
+            DB::table('projects')->where('id', $id)->update($request[0]);
+            return response()->json([$request[0], 200]);
+        } else {
+            return response()->json(['Forbidden', 403]);
+        }
     }
 
     /**
@@ -96,9 +108,13 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
-    {
-        DB::table('projects')->where('id', $id)->delete();
-        return response()->json(null, 204);
+    {  
+        if(checkProjectRight($id, auth()->user()->id)) {
+            DB::table('projects')->where('id', $id)->delete();
+            return response()->json(null, 204);
+        } else {
+            return response()->json(['Forbidden', 403]);
+        }
     }
 
     /**
@@ -110,33 +126,46 @@ class ProjectController extends Controller
      */
     public function sendInvitation(Request $request, $id)
     {
-        $project = Project::findOrFail($id);
-        $project->temp_username = $request->user_email;
-        $project->temp_password = str_random(10);
-        try {
-            $user_to_create = [
-                'first_name' => $project->temp_username,
-                'email' => $request->user_email,
-                'password' => $project->temp_password
-            ];
-            $created_user = User::create($user_to_create);
-            DB::table('project_user')->insert(
-                [
-                    'user_id' => $created_user->id,
-                    'project_id' => $id
-                ]
-            );
-            Mail::to($request->user_email)
-                ->cc('houragantt-2eebaf@inbox.mailtrap.io')
-                ->send(new Invitation($project));
-            $message = 'User account created and invitation sent';
-        } catch (Exception $e) {
-            Mail::to($request->user_email)
-                ->cc('houragantt-2eebaf@inbox.mailtrap.io')
-                ->send(new InvitationProject($project));
-            $message = 'This user has already an account, invitation has been sent';
+        if(checkProjectRight($id, auth()->user()->id)) {
+            $project = Project::findOrFail($id);
+            $project->temp_username = $request->user_email;
+            $project->temp_password = str_random(10);
+            try {
+                $user_to_create = [
+                    'first_name' => $project->temp_username,
+                    'email' => $request->user_email,
+                    'password' => $project->temp_password
+                ];
+                $created_user = User::create($user_to_create);
+                DB::table('project_user')->insert(
+                    [
+                        'user_id' => $created_user->id,
+                        'project_id' => $id,
+                        'project_owner' => 1
+                    ]
+                );
+                Mail::to($request->user_email)
+                    ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                    ->send(new Invitation($project));
+                $message = 'User account created and invitation sent';
+            } catch (Exception $e) {
+                $user = db::table('users')->select('id')->where('email', $request->user_email)->first();
+                DB::table('project_user')->insert(
+                    [
+                        'user_id' => $user->id,
+                        'project_id' => $id,
+                        'project_owner' => 1
+                    ]
+                );
+                Mail::to($request->user_email)
+                    ->cc('houragantt-2eebaf@inbox.mailtrap.io')
+                    ->send(new InvitationProject($project));
+                $message = 'This user has already an account, invitation has been sent';
+            }
+            return response()->json($message, 200);
+        } else {
+            return response()->json(['Forbidden', 403]);
         }
-        return response()->json($message, 200);
     }
 
     public function billingCost($id){
@@ -168,23 +197,23 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function generatePDF($id) {
-
-        $project = $this->get_json_from('http://192.168.33.10/api/projects/' . $id);
-        $project->total_cost = $this->billingCost($id);
-        
-        $project->how_many_tasks = 0;
-        foreach ($project->data->tasks as $key => $value) {
-            $project->how_many_tasks += 1;
+    public function generatePDF(Request $request, $id) {       
+        if(checkProjectRight($id, auth()->user()->id)) {
+            $project = $this->get_json_from('http://192.168.33.10/api/projects/' . $id);
+            $project->total_cost = $this->billingCost($id);
+            $project->how_many_tasks = 0;
+            foreach ($project->data->tasks as $key => $value) {
+                $project->how_many_tasks += 1;
+            }
+            $project->how_many_resources = 0;
+            foreach ($project->data->resources as $key => $value) {
+                $project->how_many_resources += 1;
+            }
+            $pdf = PDF::loadView('pdf', compact('project'));
+            return $pdf->stream($project->data->name .'_report.pdf');
+        } else {
+            return response()->json(['Forbidden', 403]);
         }
-
-        $project->how_many_resources = 0;
-        foreach ($project->data->resources as $key => $value) {
-            $project->how_many_resources += 1;
-        }
-
-        $pdf = PDF::loadView('pdf', compact('project'));
-        return $pdf->stream($project->data->name .'_report.pdf');
     }
 
     /**
