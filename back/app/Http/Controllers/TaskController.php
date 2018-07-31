@@ -76,15 +76,19 @@ class TaskController extends Controller
     public function update(Request $request, $project_id, $id)
     {
         if(checkProjectRight($project_id, auth()->user()->id)) {
-            $checkRight = checkRight(auth()->user()->id,$project_id);
+            $checkRight = checkRight(auth()->user()->id,$project);
             if($checkRight){
                 $task = Task::find($id);
                 $task->name = $request->text;
-                
                 $task->starts_at = $request->start_date;
                 $task->duration = $request->duration;
                 $task->progress = $request->has("progress") ? $request->progress : 0;
-                $task->additional_cost = $request->has("additional_cost") ? $request->progress : 0.00;
+                $task->additional_cost = $request->has("additional_cost") ? $request->additional_cost : 0.00;
+                if($request->resource_id == 0){
+                    $task->resource_id = null;
+                }else{
+                    $task->resource_id = $request->resource_id;
+                }
                 $task->save();
                 return response()->json([
                     "action"=> "updated"
