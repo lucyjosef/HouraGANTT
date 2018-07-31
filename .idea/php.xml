@@ -85,6 +85,7 @@
       <path value="$PROJECT_DIR$/back/vendor/doctrine/event-manager" />
       <path value="$PROJECT_DIR$/back/vendor/doctrine/dbal" />
       <path value="$PROJECT_DIR$/back/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/back/vendor/sunra/php-simple-html-dom-parser" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />

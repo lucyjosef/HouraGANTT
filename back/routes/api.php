@@ -44,5 +44,5 @@ Route::group([
     Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
     Route::get('downloadme', 'AuthController@DownloadUserInfo');
     Route::get('forgotme', 'AuthController@ForgetMe');
-
+    Route::post('verify', 'VerifyController@verify');
 });
