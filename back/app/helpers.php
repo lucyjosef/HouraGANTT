@@ -83,3 +83,18 @@ function checkProjectRight($id_project, $id_user) {
       return false;
   }
 }
+
+function isOwnerProject($id_project, $id_user) {
+  $right = DB::table('project_user')
+            ->where('project_id', $id_project)
+            ->where('user_id', $id_user)
+            ->first();
+  if($right){
+      if($right->project_owner === 0){
+          return true;
+      }else{
+          return false;
+      }
+   }
+   return false; 
+}

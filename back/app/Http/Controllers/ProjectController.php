@@ -31,7 +31,11 @@ class ProjectController extends Controller
         } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
            return response()->json(['Forbidden', 403]);
         }
-        return ProjectResource::collection(Project::all());
+        return DB::table('projects')
+                ->join('project_user', function ($join) {
+                    $join->on('projects.id', '=', 'project_user.project_id')
+                         ->where('project_user.user_id', '=', auth()->user()->id);
+                })->get();
     }
 
     /**
@@ -56,20 +60,21 @@ class ProjectController extends Controller
         $project->link = $request->link;
         $project->billing = $request->billing;
         $project->save();
- 
-        // $right_id = DB::table('project_user')->where([
-        //     ['user_id', '=', $request->user_id],
-        //     ['project_id', '=', $project->id],
-        // ])->get();
 
         DB::table('project_user')->insert(
             [
                 'user_id' => $user_id,
-                'project_id' => $project->id
+                'project_id' => $project->id,
+                'project_owner' => 0, 
+                'right_id' => 1
             ]
         );
-
-        return $project;
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Project successfully created',
+            'data' => $project,
+            'status_code' => 201
+        ]);
     }
 
     /**
@@ -83,9 +88,26 @@ class ProjectController extends Controller
         try {
            $user = auth()->userOrFail();
         } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-           return response()->json(['Forbidden', 403]);
+           return response()->json([
+                'status' => 'fail',
+                'message' => 'Forbidden',
+                'status_code' => 403
+            ]);
         }
-        return new ProjectResource(Project::find($id));
+        if(checkProjectRight($id, auth()->user()->id)) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Project shown successfully',
+                'data' => new ProjectResource(Project::find($id)),
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Unauthorized',
+                'status_code' => 401
+            ]);
+        }
     }
 
     /**
@@ -102,8 +124,29 @@ class ProjectController extends Controller
         } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
            return response()->json(['Forbidden', 403]);
         }
-        DB::table('projects')->where('id', $id)->update($request[0]);
-        return response()->json([$request[0], 200]);
+        if(checkProjectRight($id, auth()->user()->id)) {
+            if(checkRight(auth()->user()->id, $id)) {
+                DB::table('projects')->where('id', $id)->update($request[0]);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Successfully updated',
+                    'data' => $request[0], 
+                    'status_code' => 200
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Unauthorized : you don\'t have edit right',
+                    'status_code' => 401
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Unauthorized : you\'re not allowed on the project',
+                'status_code' => 401
+            ]);
+        }
     }
 
     /**
@@ -117,10 +160,35 @@ class ProjectController extends Controller
         try {
            $user = auth()->userOrFail();
         } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-           return response()->json(['Forbidden', 403]);
-        } 
-        DB::table('projects')->where('id', $id)->delete();
-        return response()->json(null, 204);
+           return response()->json([
+            'status' => 'fail',
+            'message' => 'Forbidden : Failed to authenticate user',
+            'status_code' => 403
+        ]);
+        }
+        if(isOwnerProject($id, auth()->user()->id)) {
+            $project = DB::table('projects')->where('id', $id)->delete();
+            if($project == 1) {
+                DB::table('project_user')->where('project_id', $id)->delete();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Successfully removed',
+                    'status_code' => 204
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Failed to remove project',
+                    'status_code' => 500
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'You\'re not authorized or project doesn\'t exist',
+                'status_code' => 500
+            ]);
+        }
     }
 
     /**
@@ -204,7 +272,12 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function generatePDF(Request $request, $id) {       
+    public function generatePDF(Request $request, $id) { 
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json(['Forbidden', 403]);
+        }      
         if(checkProjectRight($id, auth()->user()->id)) {
             $project = $this->get_json_from('http://192.168.33.10/api/projects/' . $id);
             $project->total_cost = $this->billingCost($id);
@@ -219,7 +292,7 @@ class ProjectController extends Controller
             $pdf = PDF::loadView('pdf', compact('project'));
             return $pdf->stream($project->data->name .'_report.pdf');
         } else {
-            return response()->json(['Forbidden', 403]);
+            return response()->json(['Unauthorized', 401]);
         }
     }
 

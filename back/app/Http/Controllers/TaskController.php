@@ -16,10 +16,28 @@ class TaskController extends Controller
      */
     public function index($id)
     {
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json([
+            'status' => 'fail',
+            'message' => 'Forbidden : Failed to authenticate user',
+            'status_code' => 403
+        ]);
+        }
         if(checkProjectRight($id, auth()->user()->id)) {
-            return TasksResource::collection(Task::all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successfully listed tasks',
+                'data' => TasksResource::collection(Task::all()),
+                'status_code' => 200
+            ]);
         } else {
-            return response()->json(['Forbidden', 403]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Unauthorized : you\'re not allowed on the project',
+                'status_code' => 401
+            ]);
         }
     }
 
@@ -31,23 +49,46 @@ class TaskController extends Controller
      */
     public function store(Request $request,$project)
     { 
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json([
+            'status' => 'fail',
+            'message' => 'Forbidden : Failed to authenticate user',
+            'status_code' => 403
+        ]);
+        }
         if(checkProjectRight($project, auth()->user()->id)) {
-            request()->validate([
-                'text' => 'required',
-                'start_date' => 'required',
-                'duration' => 'required'
-            ]);
-            $data = $request->all();
-            $data['project_id'] = $project;
-            $data['name'] = $request->text;
-            $data['starts_at'] = $request->start_date;
-            $tasks = Task::create($data);
-            return response()->json([
-                'status' => 'success',
-                'data' => $tasks
-            ]);
+            if(checkRight(auth()->user()->id, $project)) {
+                request()->validate([
+                    'text' => 'required',
+                    'start_date' => 'required',
+                    'duration' => 'required'
+                ]);
+                $data = $request->all();
+                $data['project_id'] = $project;
+                $data['name'] = $request->text;
+                $data['starts_at'] = $request->start_date;
+                $tasks = Task::create($data);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'successfully created task',
+                    'data' => $tasks,
+                    'status_code' => 201
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Unauthorized : You don\'t have edit right',
+                    'status_code' => 401
+                ]);
+            }
         } else {
-            return response()->json(['Forbidden', 403]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Forbidden : You don\'t have access to this project',
+                'status_code' => 403
+            ]);
         }
     }
 
@@ -59,10 +100,28 @@ class TaskController extends Controller
      */
     public function show($project_id, $id)
     {
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json([
+            'status' => 'fail',
+            'message' => 'Forbidden : Failed to authenticate user',
+            'status_code' => 403
+        ]);
+        }
         if(checkProjectRight($project_id, auth()->user()->id)) {
-            return new TasksResource(Task::find($id));
+            return response()->json([
+                'status' => 'success',
+                'message' => 'You can read this task',
+                'data' => new TasksResource(Task::find($id)),
+                'status_code' => 200
+            ]);
         } else {
-            return response()->json(['Forbidden', 403]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Forbidden : You don\'t have access to this project',
+                'status_code' => 403
+            ]);
         }
     }
 
@@ -75,9 +134,17 @@ class TaskController extends Controller
      */
     public function update(Request $request, $project_id, $id)
     {
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json([
+                'status' => 'fail',
+                'message' => 'Forbidden : Failed to authenticate user',
+                'status_code' => 403
+            ]);
+        }
         if(checkProjectRight($project_id, auth()->user()->id)) {
-            $checkRight = checkRight(auth()->user()->id,$project_id);
-            if($checkRight){
+            if(checkRight(auth()->user()->id,$project_id)){
                 $task = Task::find($id);
                 $task->name = $request->text;
                 $task->starts_at = $request->start_date;
@@ -91,13 +158,24 @@ class TaskController extends Controller
                 }
                 $task->save();
                 return response()->json([
-                    "action"=> "updated"
+                    'status' => 'success',
+                    'message' => 'Successfully updated task',
+                    'data' => $task,
+                    'status_code' => 200
                 ]);
             } else{
-                return response()->json(["message"=> "Unauthorized action"],401);
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Unauthorized : You don\'t have edit right',
+                    'status_code' => 401
+                ]);
             }
         } else {
-            return response()->json(['Forbidden', 403]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Forbidden : Failed to authenticate user',
+                'status_code' => 403
+            ]);
         }
     }
 
@@ -110,16 +188,38 @@ class TaskController extends Controller
 
     public function destroy(Request $request,$project,$id)
     {
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json([
+                'status' => 'fail',
+                'message' => 'Forbidden : Failed to authenticate user',
+                'status_code' => 403
+            ]);
+        }
+        if(checkProjectRight($project, auth()->user()->id)) {
+            if(checkRight($user_id,$project)){
+                DB::table('tasks')->where('id', $id)->delete(); 
 
-        $user_id = auth()->user()->id;
-        $checkRight = checkRight($user_id,$project);
-        if($checkRight){
-            DB::table('tasks')->where('id', $id)->delete(); 
-
-            InsertLog("deleteTask",$id,$user_id);
-            return response()->json(null, 204);
-        }else{
-            return response()->json(["message"=> "Unauthorized action"],401);
+                InsertLog("deleteTask",$id,auth()->user()->id);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Successfully deleted',
+                    'status_code' => 200
+                ]);
+            }else{
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Unauthorized : You don\'t have edit right',
+                    'status_code' => 401
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Forbidden : Failed to authenticate user',
+                'status_code' => 403
+            ]);
         }
     }
 
