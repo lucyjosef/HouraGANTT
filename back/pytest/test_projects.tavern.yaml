@@ -94,9 +94,9 @@ stages:
     request:
       url: http://192.168.33.10/api/projects/{project_id_1}
       method: GET
-      headers: &default_headers_2
-          Content-Type: application/x-www-form-urlencoded
-          Authorization: "Bearer {access_token_2}"
+      headers:
+        Content-Type: application/x-www-form-urlencoded
+        Authorization: "Bearer fakebearer"
     response:
       status_code: 200
       body:

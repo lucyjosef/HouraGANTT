@@ -3,6 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/pyrest/tavern
 /.idea
 /.vscode
 /.vagrant

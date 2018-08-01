@@ -69,6 +69,7 @@ class TaskController extends Controller
                 $data['project_id'] = $project;
                 $data['name'] = $request->text;
                 $data['starts_at'] = $request->start_date;
+                $data['additional_cost'] = $request->has("additional_cost") ? $request->additional_cost : 0.00;
                 $tasks = Task::create($data);
                 return response()->json([
                     'status' => 'success',
@@ -199,7 +200,7 @@ class TaskController extends Controller
         }
         if(checkProjectRight($project, auth()->user()->id)) {
             if(checkRight(auth()->user()->id,$project)){
-                InsertLog("deleteTask",$id,auth()->user()->id);
+                // InsertLog("deleteTask",$id,auth()->user()->id);
                 DB::table('tasks')->where('id', $id)->delete(); 
                 return response()->json([
                     'status' => 'success',

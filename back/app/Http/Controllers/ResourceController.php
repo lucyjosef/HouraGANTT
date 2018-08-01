@@ -198,7 +198,7 @@ class ResourceController extends Controller
                 $data =  DB::table('tasks')
                     ->where('resource_id', $id)
                     ->update(['resource_id' => Null]);
-                InsertLog("deleteRessource",$id,auth()->user()->id);
+                // InsertLog("deleteRessource",$id,auth()->user()->id);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Successfully deleted',
