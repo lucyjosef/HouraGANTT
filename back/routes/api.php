@@ -25,6 +25,8 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::get('me', 'AuthController@me');
+    Route::put('me/updateprofil', 'AuthController@UpdateUserInfo');
+
     Route::post('addResourceTask', 'TaskController@ResourceToTask');
     Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
@@ -42,7 +44,7 @@ Route::group([
 
     Route::post('projects/{id}/invite', 'ProjectController@sendInvitation');
     Route::get('projects/{id}/billingcost', 'ProjectController@billingCost');
-    Route::get('downloadme', 'AuthController@DownloadUserInfo');
+    Route::get('me/downloadme', 'AuthController@DownloadUserInfo');
     Route::get('forgotme', 'AuthController@ForgetMe');
     Route::post('verify', 'VerifyController@verify');
     Route::get('project/{id}/downloadPDF', 'ProjectController@generatePDF');

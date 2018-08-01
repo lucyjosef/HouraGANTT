@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Resource;
 use App\Task;
 use Illuminate\Http\Request;
+use Validator;
 
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
@@ -103,7 +104,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function updateProfil(Request $request,$id){
+    public function updateProfil(Request $request){
         $user = User::find(auth()->user()->id);
         $user->name = $request->first_name;
         $user->last_name = $request->last_name;
@@ -117,7 +118,7 @@ class AuthController extends Controller
     public function DownloadUserInfo(Request $request)
     {
         $user = DB::table('users')->select('first_name', 'email as user_email','last_name','avatar')
-            ->where('id', '=', 1)
+            ->where('id', '=', auth()->user()->id)
             ->get();
         $project_user = DB::table('project_user')->where('user_id', '=',auth()->user()->id)->get();
         $projects = array();
@@ -135,8 +136,8 @@ class AuthController extends Controller
         $filename = 'data_'.auth()->user()->id.'.json';
         $json =  response()->json(['user' => $user,'projects'=> $projects]);
         $storage = Storage::put($filename, $json);
-        return response()->json(['message' => $storage]);
-    }
+        return response()->download(storage_path('app/' . $filename));
+       }
 
     public function ForgetMe()
     {
@@ -157,5 +158,40 @@ class AuthController extends Controller
         }
         $valid = DB::table('users')->where('id', '=', auth()->user()->id)->delete();
         return response()->json(['message' => $valid]);
+    }
+
+    public function admin_credential_rules(array $data)
+    {
+        $messages = [
+            'current-password.required' => 'Please enter current password',
+            'password.required' => 'Please enter password',
+        ];
+
+        $validator = Validator::make($data, [
+            'current_password' => 'required',
+            'password' => 'required|same:password',
+            'password_confirmation' => 'required|same:password',
+        ], $messages);
+
+        return $validator;
+    }
+
+    public function UpdateUserInfo(Request $request){
+        $user = User::whereEmail($request->email)->first();
+        $render =   $user->update(['password'=>$request->password,'first_name'=>$request->first_name,'last_name'=>$request->last_name]);
+        if($render){
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update user successful',
+                'data' => $render,
+                'status_code' => 200
+            ]);
+        }else{
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Update user failed',
+                'status_code' => 401
+            ]);
+        }
     }
 }
