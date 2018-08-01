@@ -198,10 +198,9 @@ class TaskController extends Controller
             ]);
         }
         if(checkProjectRight($project, auth()->user()->id)) {
-            if(checkRight($user_id,$project)){
-                DB::table('tasks')->where('id', $id)->delete(); 
-
+            if(checkRight(auth()->user()->id,$project)){
                 InsertLog("deleteTask",$id,auth()->user()->id);
+                DB::table('tasks')->where('id', $id)->delete(); 
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Successfully deleted',

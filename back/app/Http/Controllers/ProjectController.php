@@ -46,6 +46,15 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+           $user = auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+           return response()->json([
+                'status' => 'fail',
+                'message' => 'Forbidden',
+                'status_code' => 403
+            ]);
+        }
         $token = $request->header('Authorization');
         $token = substr($token, 6);
         $token = trim($token);
