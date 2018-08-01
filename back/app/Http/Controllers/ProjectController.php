@@ -105,7 +105,7 @@ class ProjectController extends Controller
         }
         if(checkProjectRight($id, auth()->user()->id)) {
             return response()->json([
-                'status' => 'fail',
+                'status' => 'success',
                 'message' => 'Project shown successfully',
                 'data' => new ProjectResource(Project::find($id)),
                 'status_code' => 200
@@ -281,12 +281,12 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function generatePDF(Request $request, $id) { 
+    public function generatePDF($id) { 
         try {
            $user = auth()->userOrFail();
         } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
            return response()->json(['Forbidden', 403]);
-        }      
+        }
         if(checkProjectRight($id, auth()->user()->id)) {
             $project = $this->get_json_from('http://192.168.33.10/api/projects/' . $id);
             $project->total_cost = $this->billingCost($id);
@@ -315,7 +315,8 @@ class ProjectController extends Controller
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $url
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => array('Authorization: Bearer ' . auth()->user()->token)
         ));
         return json_decode(curl_exec($curl));
     }
