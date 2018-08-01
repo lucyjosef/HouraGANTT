@@ -237,6 +237,8 @@ class ResourceController extends Controller
             foreach ($resources as $key => $value) {
 
                 $render[$key]['name'] = $value->name;
+                $render[$key]['id'] = $value->id;
+                $render[$key]['project_id'] = $value->project_id;
                 $render[$key]['job'] = $value->job;
                 $render[$key]['ratio'] = $value->ratio;
 

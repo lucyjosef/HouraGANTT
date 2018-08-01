@@ -65,10 +65,10 @@ stages:
         Content-Type: application/x-www-form-urlencoded
         Authorization: "Bearer {access_token_1}"
     response:
-      status_code: 201
+      status_code: 200
       save:
         body:
-          project_id_1: id
+          project_id_1: data.id
 
   - name: User1 invites User2 on the project
     request: 
@@ -89,6 +89,32 @@ stages:
           Authorization: "Bearer {access_token_2}"
     response:
       status_code: 200
+
+  - name: User2 access project with wrong token
+    request:
+      url: http://192.168.33.10/api/projects/{project_id_1}
+      method: GET
+      headers: &default_headers_2
+          Content-Type: application/x-www-form-urlencoded
+          Authorization: "Bearer {access_token_2}"
+    response:
+      status_code: 200
+      body:
+        status_code: 403
+
+  - name: User3 cannot acces this project 
+    request:
+      url: http://192.168.33.10/api/projects/{project_id_1}
+      method: GET
+      headers: &default_headers_3
+          Content-Type: application/x-www-form-urlencoded
+          Authorization: "Bearer {access_token_3}"
+    response:
+      status_code: 200
+      body:
+        status_code: 401
+
+
 
  
 

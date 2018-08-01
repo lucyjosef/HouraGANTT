@@ -1,1 +1,4 @@
-{}
+{
+  "test_projects.tavern.yaml": true, 
+  "test_projects.tavern.yaml::HouraGANTT Project tester": true
+}
