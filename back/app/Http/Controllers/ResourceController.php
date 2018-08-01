@@ -194,10 +194,10 @@ class ResourceController extends Controller
         }
         if(checkProjectRight($project, auth()->user()->id)) {
             if(checkRight(auth()->user()->id,$project)){
-                DB::table('resources')->where('id', $id)->delete();
                 $data =  DB::table('tasks')
                     ->where('resource_id', $id)
                     ->update(['resource_id' => Null]);
+                DB::table('resources')->where('id', $id)->delete();
                 // InsertLog("deleteRessource",$id,auth()->user()->id);
                 return response()->json([
                     'status' => 'success',
