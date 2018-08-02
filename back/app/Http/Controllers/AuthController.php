@@ -133,10 +133,12 @@ class AuthController extends Controller
                 $projects[] = $each_project;
             }
         }
-        $filename = 'data_'.auth()->user()->id.'.json';
+        $filename = 'public/data_'.auth()->user()->id.'.json';
+        $file = 'data_'.auth()->user()->id.'.json';
         $json =  response()->json(['user' => $user,'projects'=> $projects]);
-        $storage = Storage::put($filename, $json);
-        return response()->download(storage_path('app/' . $filename));
+        $directory = "http://192.168.33.10/storage/".$file;
+        Storage::put($filename, $json);
+        return response()->json(['status' => 'sucess','data'=> $directory]);
        }
 
     public function ForgetMe()
@@ -178,7 +180,12 @@ class AuthController extends Controller
 
     public function UpdateUserInfo(Request $request){
         $user = User::whereEmail($request->email)->first();
-        $render =   $user->update(['password'=>$request->password,'first_name'=>$request->first_name,'last_name'=>$request->last_name]);
+        if($request->password != ""){
+            $render =   $user->update(['password'=>$request->password,'first_name'=>$request->first_name,'last_name'=>$request->last_name]);
+
+        }else{
+            $render =   $user->update(['first_name'=>$request->first_name,'last_name'=>$request->last_name]);
+        }
         if($render){
             return response()->json([
                 'status' => 'success',
