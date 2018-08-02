@@ -242,7 +242,7 @@ class TaskController extends Controller
                 ->where('id', $request->task_id)
                 ->update(['resource_id' => $resource_id]);
 
-            InsertLog($functionName,$request->task_id,$user_id);
+            // InsertLog($functionName,$request->task_id,$user_id);
             return response()->json([
                 'status' => 'success',
                 'data' => $data

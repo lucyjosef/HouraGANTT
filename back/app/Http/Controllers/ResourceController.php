@@ -151,7 +151,7 @@ class ResourceController extends Controller
                 $resource->job = $request->job;
                 $resource->first_name = $request->first_name;
                 $resource->save();
-                InsertLog("UpdateRessource",$id,auth()->user()->id);
+                // InsertLog("UpdateRessource",$id,auth()->user()->id);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Successfully updated task',
