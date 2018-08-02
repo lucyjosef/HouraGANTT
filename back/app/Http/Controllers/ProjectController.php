@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Mail\InvitationProject;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
@@ -298,8 +299,11 @@ class ProjectController extends Controller
             foreach ($project->data->resources as $key => $value) {
                 $project->how_many_resources += 1;
             }
-            $pdf = PDF::loadView('pdf', compact('project'));
-            return $pdf->stream($project->data->name .'_report.pdf');
+            $pdf = PDF::loadView('pdf', compact('project'))->save(date('Y-m-d') . '_' . $project->data->name . '_report.pdf');
+            // return $pdf->stream($project->data->name .'_report.pdf');
+            // $saved = PDF::loadHTML('pdf')->save(date('Y-m-d') . '_' . $project->data->name . '_report.pdf');
+            Storage::put('download.pdf', $pdf);
+            return 200;
         } else {
             return response()->json(['Unauthorized', 401]);
         }
