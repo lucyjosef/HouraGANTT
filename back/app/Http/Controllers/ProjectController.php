@@ -307,7 +307,7 @@ class ProjectController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'PDF generated',
-                'url' => $url,
+                'url' => 'http://192.168.33.10/' . $url,
                 'status_code' => 200
             ]);
         } else {
