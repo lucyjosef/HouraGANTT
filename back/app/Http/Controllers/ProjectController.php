@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Mail\InvitationProject;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
@@ -135,7 +136,17 @@ class ProjectController extends Controller
         }
         if(checkProjectRight($id, auth()->user()->id)) {
             if(checkRight(auth()->user()->id, $id)) {
-                DB::table('projects')->where('id', $id)->update($request[0]);
+                // MODIF JEREM
+                $project = Project::find($id);
+                $project->name = $request->name;
+                $project->description = $request->description;
+                $project->duration_days = $request->duration_days;
+                $project->link = $request->link;
+                $project->billing = $request->billing;
+                $project->save();
+
+
+                // DB::table('projects')->where('id', $id)->update($request);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Successfully updated',
@@ -298,8 +309,17 @@ class ProjectController extends Controller
             foreach ($project->data->resources as $key => $value) {
                 $project->how_many_resources += 1;
             }
-            $pdf = PDF::loadView('pdf', compact('project'));
-            return $pdf->stream($project->data->name .'_report.pdf');
+            $url = date('Y-m-d') . '_' . $project->data->name . '_report.pdf';
+            $pdf = PDF::loadView('pdf', compact('project'))->save($url);
+            // return $pdf->stream($project->data->name .'_report.pdf');
+            // $saved = PDF::loadHTML('pdf')->save(date('Y-m-d') . '_' . $project->data->name . '_report.pdf');
+            Storage::put('download.pdf', $pdf);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'PDF generated',
+                'url' => 'http://192.168.33.10/' . $url,
+                'status_code' => 200
+            ]);
         } else {
             return response()->json(['Unauthorized', 401]);
         }
