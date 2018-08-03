@@ -124,7 +124,7 @@ class AuthController extends Controller
         $projects = array();
         if($project_user){
             foreach ($project_user as $project){
-                $each_project = DB::table('projects')->where('id', '=',$project->id)->first();
+                $each_project = DB::table('projects')->where('id', '=',$project->project_id)->first();
                 if($project->project_owner === 0){
                     $each_project->project_status = "owner";
                 }else{
@@ -154,12 +154,22 @@ class AuthController extends Controller
                     $valid = DB::table('project_user')->where('project_id', '=', $projectId)->delete();
                     $valid = DB::table('projects')->where('id', '=', $projectId)->delete();
                 }else{
-                    $valid = DB::table('project_user')->where('project_id', '=', $projectId)->delete();
+                    $valid = DB::table('project_user')
+                        ->where('project_id', '=', $projectId)
+                        ->where('user_id', '=', auth()->user()->id)
+                        ->delete();
                 }
             }
         }
         $valid = DB::table('users')->where('id', '=', auth()->user()->id)->delete();
-        return response()->json(['message' => $valid]);
+        if($valid){
+            return response()->json(['message' => "user delete with success",'status'=> 'sucess']);
+
+        }else{
+            return response()->json(['message' => "error occured",'status'=> 'failed']);
+
+        }
+
     }
 
     public function admin_credential_rules(array $data)
