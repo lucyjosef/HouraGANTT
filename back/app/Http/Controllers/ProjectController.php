@@ -136,7 +136,17 @@ class ProjectController extends Controller
         }
         if(checkProjectRight($id, auth()->user()->id)) {
             if(checkRight(auth()->user()->id, $id)) {
-                DB::table('projects')->where('id', $id)->update($request[0]);
+                // MODIF JEREM
+                $project = Project::find($id);
+                $project->name = $request->name;
+                $project->description = $request->description;
+                $project->duration_days = $request->duration_days;
+                $project->link = $request->link;
+                $project->billing = $request->billing;
+                $project->save();
+
+
+                // DB::table('projects')->where('id', $id)->update($request);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Successfully updated',
